@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭预算模板与储蓄追踪</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background: white;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th {
+            background: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        td input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        td input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f9f9ff;
+        }
+        .total-row {
+            background: #f9f9ff;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .goal-card {
+            background: #f9f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .goal-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .category-group {
+            margin-bottom: 25px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .category-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        .print-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .print-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .tabs, .print-btn, .header {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 金钱管理工具</h1>
+            <p>帮助家庭和孩子学习理财的第一步</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('budget', this)">📊 家庭预算模板</button>
+            <button class="tab-btn" onclick="switchTab('savings', this)">🎯 储蓄目标追踪</button>
+        </div>
+
+        <!-- 家庭预算模板 -->
+        <div id="budget" class="tab-content active">
+            <div class="section">
+                <div class="section-title">📋 我们的家庭信息</div>
+                <table>
+                    <tr>
+                        <td>家庭名称：</td>
+                        <td><input type="text" placeholder="例如：王家"></td>
+                        <td>月份：</td>
+                        <td><input type="month"></td>
+                    </tr>
+                    <tr>
+                        <td>家庭成员：</td>
+                        <td><input type="text" placeholder="例如：爸爸、妈妈、小王"></td>
+                        <td>总月收入：</td>
+                        <td><input type="number" placeholder="0" id="totalIncome" onchange="calculateBudget()"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💵 支出分类预算</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>支出类别</th>
+                            <th>计划预算</th>
+                            <th>实际花费</th>
+                            <th>差异（节省/超支）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🏠 房屋（房租/房贷）</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td id="diff-house">-</td>
+                        </tr>
+                        <tr>
+                            <td>🍽️ 食物和饮食</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>🚗 交通（汽车、公交等）</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>📱 电话和网络</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>🎓 教育和学习</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>🎮 娱乐和休闲</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>🛒 购物和零用钱</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>🏥 医疗和保险</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>💳 其他支出</td>
+                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
+                            <td><input type="number" placeholder="0"></td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>总支出</td>
+                            <td id="total-budget">0</td>
+                            <td id="total-actual">0</td>
+                            <td id="total-diff">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💾 储蓄计划</div>
+                <table>
+                    <tr>
+                        <td>💰 紧急备用金（目标）：</td>
+                        <td><input type="number" placeholder="0"></td>
+                        <td>目前已存：</td>
+                        <td><input type="number" placeholder="0"></td>
+                    </tr>
+                    <tr>
+                        <td>🏦 每月储蓄目标：</td>
+                        <td><input type="number" placeholder="0"></td>
+                        <td>这个月已存：</td>
+                        <td><input type="number" placeholder="0"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <button class="print-btn" onclick="window.print()">🖨️ 打印此表格</button>
+        </div>
+
+        <!-- 储蓄目标追踪 -->
+        <div id="savings" class="tab-content">
+            <div class="section">
+                <div class="section-title">🎯 我的储蓄目标</div>
+                <p style="color: #666; margin-bottom: 20px;">填写你想要存钱达成的目标，并追踪进度！</p>
+            </div>
+
+            <div id="goalsContainer">
+                <div class="goal-card">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="font-weight: bold; color: #333;">🎯 目标名称</label>
+                            <input type="text" placeholder="例如：买游戏机、春游、新书包" class="goal-name">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold; color: #333;">📅 目标完成日期</label>
+                            <input type="date" class="goal-date">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label style="font-weight: bold; color: #333;">💵 目标金额</label>
+                            <input type="number" placeholder="0" class="goal-amount">
+                        </div>
+                        <div>
+                            <label style="font-weight: bold; color: #333;">💰 已存金额</label>
+                            <input type="number" placeholder="0" class="goal-saved" onchange="updateProgress(this)">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <label style="font-weight: bold; color: #333;">进度</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;">0%</div>
+                        </div>
+                    </div>
+
+                    <button style="margin-top: 15px; padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;" onclick="removeGoal(this)">❌ 删除目标</button>
+                </div>
+            </div>
+
+            <button style="background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; width: 100%;" onclick="addGoal()">➕ 添加新目标</button>
+
+            <button class="print-btn" onclick="window.print()">🖨️ 打印此表格</button>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName, button) {
+            // 隐藏所有tab内容
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // 取消所有按钮活跃状态
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            // 显示选中的tab
+            document.getElementById(tabName).classList.add('active');
+            // 激活对应按钮
+            button.classList.add('active');
+        }
+
+        function calculateBudget() {
+            const inputs = document.querySelectorAll('.budget-input');
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            document.getElementById('total-budget').textContent = total.toFixed(2);
+        }
+
+        function addGoal() {
+            const container = document.getElementById('goalsContainer');
+            const newGoal = document.createElement('div');
+            newGoal.className = 'goal-card';
+            newGoal.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="font-weight: bold; color: #333;">🎯 目标名称</label>
+                        <input type="text" placeholder="例如：买游戏机、春游、新书包" class="goal-name">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #333;">📅 目标完成日期</label>
+                        <input type="date" class="goal-date">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div>
+                        <label style="font-weight: bold; color: #333;">💵 目标金额</label>
+                        <input type="number" placeholder="0" class="goal-amount">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #333;">💰 已存金额</label>
+                        <input type="number" placeholder="0" class="goal-saved" onchange="updateProgress(this)">
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="font-weight: bold; color: #333;">进度</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+
+                <button style="margin-top: 15px; padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;" onclick="removeGoal(this)">❌ 删除目标</button>
+            `;
+            container.appendChild(newGoal);
+        }
+
+        function removeGoal(btn) {
+            btn.closest('.goal-card').remove();
+        }
+
+        function updateProgress(input) {
+            const card = input.closest('.goal-card');
+            const saved = parseFloat(input.value) || 0;
+            const amount = parseFloat(card.querySelector('.goal-amount').value) || 0;
+            const percentage = amount > 0 ? (saved / amount * 100).toFixed(0) : 0;
+            const progressFill = card.querySelector('.progress-fill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '%';
+        }
+    </script>
+</body>
+</html>
