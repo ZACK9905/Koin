@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>家庭预算模板与储蓄追踪</title>
+    <title>家庭理财管理工具</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF9F43">
     <style>
         * {
             margin: 0;
@@ -11,433 +13,967 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 30px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFF5E6 0%, #F0E8DC 100%);
+            color: #333;
             min-height: 100vh;
         }
-        .container {
+        .app {
             max-width: 1000px;
             margin: 0 auto;
+            padding: 20px;
         }
         .header {
-            text-align: center;
+            background: linear-gradient(135deg, #FF9F43 0%, #EE5A6F 50%, #78C850 100%);
+            padding: 25px;
+            border-radius: 16px;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 24px rgba(255, 159, 67, 0.25);
         }
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
-        .tabs {
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        .nav {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 8px;
             flex-wrap: wrap;
         }
-        .tab-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+        .nav-btn {
+            padding: 10px 18px;
+            border: 2px solid #FF9F43;
+            background: white;
+            color: #FF9F43;
+            border-radius: 10px;
             cursor: pointer;
-            background: white;
-            color: #667eea;
-            transition: all 0.3s;
-        }
-        .tab-btn.active {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .tab-btn:hover {
-            transform: translateY(-2px);
-        }
-        .tab-content {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .section-title {
-            font-size: 1.3em;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th {
-            background: #f0f0f0;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-            color: #333;
-            border-bottom: 2px solid #667eea;
-        }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        td input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            font-weight: 600;
             font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
         }
-        td input:focus {
-            outline: none;
-            border-color: #667eea;
-            background: #f9f9ff;
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 159, 67, 0.2);
         }
-        .total-row {
-            background: #f9f9ff;
-            font-weight: bold;
-            color: #667eea;
+        .nav-btn.active {
+            background: linear-gradient(135deg, #FF9F43 0%, #EE5A6F 100%);
+            color: white;
+            border-color: transparent;
         }
-        .goal-card {
-            background: #f9f9ff;
-            border-left: 4px solid #667eea;
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: white;
+            border-radius: 14px;
             padding: 20px;
             margin-bottom: 20px;
-            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #F5E6D3;
         }
-        .goal-card input {
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .metric {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE8CC 100%);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 2px solid #FF9F43;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF9F43;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 6px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border: 2px solid #E8D7C3;
+            border-radius: 8px;
             font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #FF9F43;
+            background: #FFFBF5;
+        }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #FF9F43 0%, #EE5A6F 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 159, 67, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #78C850 0%, #4CAF50 100%);
+            color: white;
+        }
+        .btn-danger {
+            background: #FF6B6B;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
         }
         .progress-bar {
             width: 100%;
-            height: 25px;
-            background: #e0e0e0;
-            border-radius: 12px;
+            height: 10px;
+            background: #E8D7C3;
+            border-radius: 10px;
             overflow: hidden;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
+            background: linear-gradient(90deg, #FF9F43 0%, #EE5A6F 100%);
+            border-radius: 10px;
             transition: width 0.3s;
+        }
+        .challenge-day {
+            background: linear-gradient(135deg, #FFF9F0 0%, #FFE8CC 100%);
+            border: 2px solid #FF9F43;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
+            gap: 12px;
+        }
+        .challenge-day.completed {
+            background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E9 100%);
+            border-color: #78C850;
+        }
+        .challenge-day.missed {
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+            border-color: #FF9999;
+            opacity: 0.8;
+        }
+        .day-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FF9F43;
+            min-width: 40px;
+            text-align: center;
+        }
+        .challenge-day.completed .day-number {
+            color: #78C850;
+        }
+        .day-info {
+            flex: 1;
+        }
+        .day-info input {
+            width: 100%;
+            margin: 0;
+        }
+        .day-status {
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
+            color: #666;
         }
-        .category-group {
-            margin-bottom: 25px;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
+        .day-status.complete {
+            color: #78C850;
         }
-        .category-title {
-            font-weight: bold;
+        .day-status.missed {
+            color: #FF6B6B;
+        }
+        .achievement {
+            background: linear-gradient(135deg, #FFE8CC 0%, #FFD699 100%);
+            border: 2px solid #FF9F43;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .achievement-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .achievement-text {
+            font-size: 14px;
+            font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
-            font-size: 1.05em;
         }
-        .print-btn {
-            background: #667eea;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+        .summary-box {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border: 2px solid #78C850;
+            border-radius: 12px;
+            padding: 16px;
             margin-top: 20px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .lang-btn {
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
             transition: all 0.3s;
         }
-        .print-btn:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-        @media print {
-            body {
-                background: white;
-            }
-            .tabs, .print-btn, .header {
-                display: none;
-            }
-            .tab-content {
-                display: block !important;
-                box-shadow: none;
-                page-break-after: always;
-            }
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.8);
+            color: #FF9F43;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app">
         <div class="header">
-            <h1>💰 金钱管理工具</h1>
-            <p>帮助家庭和孩子学习理财的第一步</p>
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h1 id="header-title">💰 家庭理财管理工具</h1>
+                    <p id="header-desc">帮助家庭和孩子学会理财，30天存钱挑战开始！</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+                    <button class="lang-btn" onclick="switchLang('en')">English</button>
+                </div>
+            </div>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('budget', this)">📊 家庭预算模板</button>
-            <button class="tab-btn" onclick="switchTab('savings', this)">🎯 储蓄目标追踪</button>
+        <div class="nav">
+            <button class="nav-btn active" onclick="showPage('dashboard', this)">📊 仪表板</button>
+            <button class="nav-btn" onclick="showPage('challenge', this)">🎯 30天挑战</button>
+            <button class="nav-btn" onclick="showPage('expenses', this)">💸 支出记录</button>
+            <button class="nav-btn" onclick="showPage('budget', this)">📈 预算管理</button>
+            <button class="nav-btn" onclick="showPage('reports', this)">📉 数据报告</button>
+            <button class="nav-btn" onclick="showPage('settings', this)">⚙️ 设置</button>
         </div>
 
-        <!-- 家庭预算模板 -->
-        <div id="budget" class="tab-content active">
-            <div class="section">
-                <div class="section-title">📋 我们的家庭信息</div>
-                <table>
-                    <tr>
-                        <td>家庭名称：</td>
-                        <td><input type="text" placeholder="例如：王家"></td>
-                        <td>月份：</td>
-                        <td><input type="month"></td>
-                    </tr>
-                    <tr>
-                        <td>家庭成员：</td>
-                        <td><input type="text" placeholder="例如：爸爸、妈妈、小王"></td>
-                        <td>总月收入：</td>
-                        <td><input type="number" placeholder="0" id="totalIncome" onchange="calculateBudget()"></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="section">
-                <div class="section-title">💵 支出分类预算</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>支出类别</th>
-                            <th>计划预算</th>
-                            <th>实际花费</th>
-                            <th>差异（节省/超支）</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>🏠 房屋（房租/房贷）</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td id="diff-house">-</td>
-                        </tr>
-                        <tr>
-                            <td>🍽️ 食物和饮食</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>🚗 交通（汽车、公交等）</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>📱 电话和网络</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>🎓 教育和学习</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>🎮 娱乐和休闲</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>🛒 购物和零用钱</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>🏥 医疗和保险</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>💳 其他支出</td>
-                            <td><input type="number" placeholder="0" class="budget-input" onchange="calculateBudget()"></td>
-                            <td><input type="number" placeholder="0"></td>
-                            <td>-</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td>总支出</td>
-                            <td id="total-budget">0</td>
-                            <td id="total-actual">0</td>
-                            <td id="total-diff">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section">
-                <div class="section-title">💾 储蓄计划</div>
-                <table>
-                    <tr>
-                        <td>💰 紧急备用金（目标）：</td>
-                        <td><input type="number" placeholder="0"></td>
-                        <td>目前已存：</td>
-                        <td><input type="number" placeholder="0"></td>
-                    </tr>
-                    <tr>
-                        <td>🏦 每月储蓄目标：</td>
-                        <td><input type="number" placeholder="0"></td>
-                        <td>这个月已存：</td>
-                        <td><input type="number" placeholder="0"></td>
-                    </tr>
-                </table>
-            </div>
-
-            <button class="print-btn" onclick="window.print()">🖨️ 打印此表格</button>
-        </div>
-
-        <!-- 储蓄目标追踪 -->
-        <div id="savings" class="tab-content">
-            <div class="section">
-                <div class="section-title">🎯 我的储蓄目标</div>
-                <p style="color: #666; margin-bottom: 20px;">填写你想要存钱达成的目标，并追踪进度！</p>
-            </div>
-
-            <div id="goalsContainer">
-                <div class="goal-card">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <label style="font-weight: bold; color: #333;">🎯 目标名称</label>
-                            <input type="text" placeholder="例如：买游戏机、春游、新书包" class="goal-name">
-                        </div>
-                        <div>
-                            <label style="font-weight: bold; color: #333;">📅 目标完成日期</label>
-                            <input type="date" class="goal-date">
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                        <div>
-                            <label style="font-weight: bold; color: #333;">💵 目标金额</label>
-                            <input type="number" placeholder="0" class="goal-amount">
-                        </div>
-                        <div>
-                            <label style="font-weight: bold; color: #333;">💰 已存金额</label>
-                            <input type="number" placeholder="0" class="goal-saved" onchange="updateProgress(this)">
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 15px;">
-                        <label style="font-weight: bold; color: #333;">进度</label>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%;">0%</div>
-                        </div>
-                    </div>
-
-                    <button style="margin-top: 15px; padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;" onclick="removeGoal(this)">❌ 删除目标</button>
+        <!-- 仪表板 -->
+        <div id="page-dashboard" class="page active">
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label" id="lbl-monthlyIncome">月收入</div>
+                    <div class="metric-value" id="dash-income">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label" id="lbl-spent">已支出</div>
+                    <div class="metric-value" id="dash-spent">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label" id="lbl-remaining">结余</div>
+                    <div class="metric-value" id="dash-remaining">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label" id="lbl-savingsRate">存钱率</div>
+                    <div class="metric-value" id="dash-rate">0%</div>
                 </div>
             </div>
 
-            <button style="background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; width: 100%;" onclick="addGoal()">➕ 添加新目标</button>
+            <div class="card">
+                <div class="section-title" id="lbl-challengeProgress">📅 30天挑战进度</div>
+                <div id="dash-challenge"></div>
+            </div>
 
-            <button class="print-btn" onclick="window.print()">🖨️ 打印此表格</button>
+            <div class="card">
+                <div class="section-title" id="lbl-tip">💡 温馨提示</div>
+                <div id="dash-tip" style="padding: 12px; background: #FFF9F0; border-left: 4px solid #FF9F43; color: #333;"></div>
+            </div>
+        </div>
+
+        <!-- 30天挑战 -->
+        <div id="page-challenge" class="page">
+            <div class="card">
+                <div class="section-title" id="lbl-createNewChallenge">🎯 创建新挑战</div>
+                <div class="form-grid">
+                    <div>
+                        <label id="lbl-challengeName">挑战名称</label>
+                        <input type="text" id="chal-name" placeholder="如：暑假存钱计划">
+                    </div>
+                    <div>
+                        <label id="lbl-targetAmount">30天目标金额</label>
+                        <input type="number" id="chal-target" placeholder="0" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="startChallenge()" id="btn-startChallenge">开始挑战</button>
+            </div>
+
+            <div class="card" id="challenge-active-card" style="display: none;">
+                <div class="section-title" id="lbl-challengeInfo">📊 挑战进度</div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span id="chal-name-display"></span>
+                        <span id="chal-progress-text" style="font-weight: 700; color: #FF9F43;"></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="chal-progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #E8D7C3;">
+                    <div style="text-align: center;">
+                        <div class="metric-label" id="lbl-completedDays">已完成天数</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #78C850;" id="chal-days-complete">0</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="metric-label" id="lbl-savedAmount">已存金额</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #FF9F43;" id="chal-saved-amount">0</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="metric-label" id="lbl-remainingTarget">剩余目标</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #EE5A6F;" id="chal-remaining-target">0</div>
+                    </div>
+                </div>
+
+                <div class="section-title" id="lbl-todayCheckIn">今日打卡</div>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="number" id="chal-today-amount" placeholder="输入今天存款金额" min="0" style="flex: 1;">
+                    <button class="btn btn-success" onclick="checkInChallenge()" id="btn-checkIn">✓ 今日打卡</button>
+                </div>
+
+                <div class="section-title" id="lbl-challengeLog">挑战日志</div>
+                <div id="challenge-days" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+
+            <div class="card" id="challenge-complete-card" style="display: none;">
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+                    <div style="font-size: 20px; font-weight: 700; color: #333; margin-bottom: 8px;" id="lbl-complete">挑战完成！</div>
+                    <div id="challenge-summary"></div>
+                    <button class="btn btn-primary" onclick="resetChallenge()" style="margin-top: 20px;" id="btn-startNewChallenge">开始新挑战</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支出记录 -->
+        <div id="page-expenses" class="page">
+            <div class="card">
+                <div class="section-title" id="lbl-recordExpense">记录支出</div>
+                <div class="form-grid">
+                    <div>
+                        <label id="lbl-category">分类</label>
+                        <select id="exp-cat">
+                            <option value="housing">🏠 房屋</option>
+                            <option value="food">🍽️ 食物</option>
+                            <option value="transport">🚗 交通</option>
+                            <option value="education">🎓 教育</option>
+                            <option value="entertainment">🎮 娱乐</option>
+                            <option value="shopping">🛒 购物</option>
+                            <option value="other">💳 其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="lbl-amount">金额</label>
+                        <input type="number" id="exp-amount" placeholder="0.00" min="0">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label id="lbl-description">说明</label>
+                        <input type="text" id="exp-desc" placeholder="例：购买菜品">
+                    </div>
+                    <div>
+                        <label id="lbl-date">日期</label>
+                        <input type="date" id="exp-date">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addExpense()" id="btn-recordBtn">记录支出</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" id="lbl-recentExpense">最近支出</div>
+                <div id="expenses-list"></div>
+            </div>
+        </div>
+
+        <!-- 预算管理 -->
+        <div id="page-budget" class="page">
+            <div class="card">
+                <div class="section-title" id="lbl-incomeSettings">💰 月收入设置</div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="income-input" placeholder="输入月收入" min="0" style="flex: 1;">
+                    <button class="btn btn-primary" onclick="saveIncome()" id="btn-save">保存</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title" id="lbl-budgetPerCategory">📊 各类别预算</div>
+                <div id="budget-rows"></div>
+            </div>
+        </div>
+
+        <!-- 数据报告 -->
+        <div id="page-reports" class="page">
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label" id="lbl-totalExpense">总支出</div>
+                    <div class="metric-value" id="rep-total">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label" id="lbl-transactions">交易次数</div>
+                    <div class="metric-value" id="rep-count">0</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label" id="lbl-avgExpense">平均消费</div>
+                    <div class="metric-value" id="rep-avg">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title" id="lbl-expenseDistribution">支出分布</div>
+                <div id="reports-content"></div>
+            </div>
+        </div>
+
+        <!-- 设置 -->
+        <div id="page-settings" class="page">
+            <div class="card">
+                <div class="section-title" id="lbl-familyInfo">👨‍👩‍👧‍👦 家庭信息</div>
+                <div class="form-grid">
+                    <div>
+                        <label id="lbl-familyName">家庭名称</label>
+                        <input type="text" id="settings-name" placeholder="例：王家">
+                    </div>
+                    <div>
+                        <label id="lbl-currency">货币符号</label>
+                        <select id="settings-currency" onchange="previewCurrency(this.value)">
+                            <option value="¥">¥ 人民币</option>
+                            <option value="RM">RM 马来西亚林吉特</option>
+                            <option value="S$">S$ 新加坡元</option>
+                            <option value="HK$">HK$ 港币</option>
+                            <option value="NT$">NT$ 新台币</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%;" id="btn-saveSettings">保存设置</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" id="lbl-dataManagement">🗑️ 数据管理</div>
+                <button class="btn btn-danger" style="width: 100%;" id="btn-clearData" onclick="clearAllData()">清空所有数据</button>
+            </div>
         </div>
     </div>
 
     <script>
-        function switchTab(tabName, button) {
-            // 隐藏所有tab内容
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // 取消所有按钮活跃状态
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            // 显示选中的tab
-            document.getElementById(tabName).classList.add('active');
-            // 激活对应按钮
-            button.classList.add('active');
+        // ── i18n ──────────────────────────────────────────────────────────────
+        const i18n = {
+            zh: {
+                headerTitle: '💰 家庭理财管理工具',
+                headerDesc: '帮助家庭和孩子学会理财，30天存钱挑战开始！',
+                dashboard: '📊 仪表板',
+                challenge: '🎯 30天挑战',
+                expenses: '💸 支出记录',
+                budget: '📈 预算管理',
+                reports: '📉 数据报告',
+                settings: '⚙️ 设置',
+                monthlyIncome: '月收入', spent: '已支出', remaining: '结余', savingsRate: '存钱率',
+                challengeProgress: '📅 30天挑战进度', tip: '💡 温馨提示',
+                createNewChallenge: '🎯 创建新挑战', challengeName: '挑战名称', targetAmount: '30天目标金额',
+                startChallenge: '开始挑战', challengeInfo: '📊 挑战进度',
+                completedDays: '已完成天数', savedAmount: '已存金额', remainingTarget: '剩余目标',
+                todayCheckIn: '今日打卡', checkInBtn: '✓ 今日打卡', challengeLog: '挑战日志',
+                day: '天', checked: '✓ 已打卡', missed: '✗ 漏打卡',
+                recordExpense: '记录支出', category: '分类', amount: '金额', description: '说明', date: '日期',
+                recordBtn: '记录支出', recentExpense: '最近支出', noExpense: '📭 暂无支出记录',
+                incomeSettings: '💰 月收入设置', save: '保存', budgetPerCategory: '📊 各类别预算',
+                totalExpense: '总支出', transactions: '交易次数', avgExpense: '平均消费',
+                expenseDistribution: '支出分布',
+                familyInfo: '👨‍👩‍👧‍👦 家庭信息', familyName: '家庭名称', currency: '货币符号',
+                dataManagement: '🗑️ 数据管理', clearData: '清空所有数据',
+                confirmClear: '确定要清空所有数据吗？',
+                complete: '🎉 挑战完成！', completionRate: '完成率', targetRate: '目标达成率',
+                startNewChallenge: '开始新挑战',
+                perfect: '🌟 完美！你完成了所有30天打卡，坚持就是胜利！',
+                excellent: '🎉 非常棒！你完成了大部分挑战，再加油就能100%！',
+                good: '👍 不错！你已经完成了一半，继续努力！',
+                keepTrying: '💪 加油！虽然还有不足，但迈出第一步就是成功！',
+                noChallenge: '还没有开始挑战，去开始一个吧！', noData: '暂无数据',
+                tips: ['💡 坚持每天打卡，把存钱变成习惯！','📊 定期检查预算，看看哪些地方可以省钱。','🎯 设定明确的存钱目标，会更有动力！','👨‍👩‍👧 和家人一起讨论财务，共同成长！','💰 记录每一笔开支，才能做好预算。'],
+                housing: '🏠 房屋', food: '🍽️ 食物', transport: '🚗 交通', education: '🎓 教育',
+                entertainment: '🎮 娱乐', shopping: '🛒 购物', other: '💳 其他',
+                delete: '删除', budget: '预算', spent2: '已花', saveSettings: '保存设置',
+                inputIncomePlaceholder: '输入月收入', todayAmountPlaceholder: '输入今天存款金额'
+            },
+            en: {
+                headerTitle: '💰 Family Finance Manager',
+                headerDesc: 'Help families and kids learn financial management with our 30-day savings challenge!',
+                dashboard: '📊 Dashboard', challenge: '🎯 30-Day Challenge', expenses: '💸 Expenses',
+                budget: '📈 Budget', reports: '📉 Reports', settings: '⚙️ Settings',
+                monthlyIncome: 'Monthly Income', spent: 'Total Spent', remaining: 'Remaining', savingsRate: 'Savings Rate',
+                challengeProgress: '📅 Challenge Progress', tip: '💡 Tips',
+                createNewChallenge: '🎯 Create New Challenge', challengeName: 'Challenge Name', targetAmount: '30-Day Target',
+                startChallenge: 'Start Challenge', challengeInfo: '📊 Challenge Progress',
+                completedDays: 'Completed Days', savedAmount: 'Amount Saved', remainingTarget: 'Remaining Target',
+                todayCheckIn: "Today's Check-in", checkInBtn: '✓ Check In', challengeLog: 'Challenge Log',
+                day: 'Day', checked: '✓ Checked In', missed: '✗ Missed',
+                recordExpense: 'Record Expense', category: 'Category', amount: 'Amount', description: 'Description', date: 'Date',
+                recordBtn: 'Record', recentExpense: 'Recent Expenses', noExpense: '📭 No expenses yet',
+                incomeSettings: '💰 Monthly Income', save: 'Save', budgetPerCategory: '📊 Budget by Category',
+                totalExpense: 'Total Expenses', transactions: 'Transactions', avgExpense: 'Average Expense',
+                expenseDistribution: 'Expense Distribution',
+                familyInfo: '👨‍👩‍👧‍👦 Family Info', familyName: 'Family Name', currency: 'Currency',
+                dataManagement: '🗑️ Data Management', clearData: 'Clear All Data',
+                confirmClear: 'Are you sure you want to clear all data?',
+                complete: '🎉 Challenge Complete!', completionRate: 'Completion Rate', targetRate: 'Target Achievement',
+                startNewChallenge: 'Start New Challenge',
+                perfect: '🌟 Perfect! You completed all 30 days. Great persistence!',
+                excellent: "🎉 Excellent! You completed most of the challenge. Keep going!",
+                good: "👍 Great! You're halfway there. Keep it up!",
+                keepTrying: '💪 Keep trying! Every step forward is success!',
+                noChallenge: 'Start a challenge now!', noData: 'No data',
+                tips: ['💡 Check in every day and make saving a habit!','📊 Review your budget regularly and find ways to save.','🎯 Set clear savings goals to stay motivated!','👨‍👩‍👧 Discuss finances as a family and grow together!','💰 Track every expense to manage your budget better.'],
+                housing: '🏠 Housing', food: '🍽️ Food', transport: '🚗 Transport', education: '🎓 Education',
+                entertainment: '🎮 Entertainment', shopping: '🛒 Shopping', other: '💳 Other',
+                delete: 'Delete', budget: 'Budget', spent2: 'Spent', saveSettings: 'Save Settings',
+                inputIncomePlaceholder: 'Enter monthly income', todayAmountPlaceholder: "Enter today's savings"
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function t(key) {
+            return (i18n[currentLang] && i18n[currentLang][key]) || (i18n['zh'][key]) || key;
         }
 
-        function calculateBudget() {
-            const inputs = document.querySelectorAll('.budget-input');
-            let total = 0;
-            inputs.forEach(input => {
-                total += parseFloat(input.value) || 0;
+        // ── State ─────────────────────────────────────────────────────────────
+        let state = {
+            familyName: '我的家庭',
+            currency: '¥',
+            income: 0,
+            budgets: { housing: 0, food: 0, transport: 0, education: 0, entertainment: 0, shopping: 0, other: 0 },
+            expenses: [],
+            challenge: null,
+            challengeDays: []
+        };
+
+        function save() {
+            try { localStorage.setItem('familyFinanceApp', JSON.stringify(state)); } catch(e) {}
+        }
+
+        function load() {
+            try {
+                const s = localStorage.getItem('familyFinanceApp');
+                if (s) state = Object.assign(state, JSON.parse(s));
+            } catch(e) {}
+        }
+
+        // ── FIX: fmt() always reads state.currency ────────────────────────────
+        function fmt(n) {
+            const cur = state.currency || '¥';
+            const val = Math.abs(parseFloat(n) || 0).toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return cur + ' ' + val;
+        }
+
+        // ── Language ──────────────────────────────────────────────────────────
+        function switchLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            localStorage.setItem('selectedLang', lang);
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('header-title').textContent = t('headerTitle');
+            document.getElementById('header-desc').textContent = t('headerDesc');
+
+            const navKeys = ['dashboard','challenge','expenses','budget','reports','settings'];
+            document.querySelectorAll('.nav-btn').forEach((btn, i) => { btn.textContent = t(navKeys[i]); });
+
+            // labels
+            const lblMap = {
+                'lbl-monthlyIncome':'monthlyIncome','lbl-spent':'spent','lbl-remaining':'remaining','lbl-savingsRate':'savingsRate',
+                'lbl-challengeProgress':'challengeProgress','lbl-tip':'tip',
+                'lbl-createNewChallenge':'createNewChallenge','lbl-challengeName':'challengeName','lbl-targetAmount':'targetAmount',
+                'lbl-challengeInfo':'challengeInfo','lbl-completedDays':'completedDays','lbl-savedAmount':'savedAmount',
+                'lbl-remainingTarget':'remainingTarget','lbl-todayCheckIn':'todayCheckIn','lbl-challengeLog':'challengeLog',
+                'lbl-complete':'complete',
+                'lbl-recordExpense':'recordExpense','lbl-category':'category','lbl-amount':'amount',
+                'lbl-description':'description','lbl-date':'date',
+                'lbl-recentExpense':'recentExpense','lbl-incomeSettings':'incomeSettings',
+                'lbl-budgetPerCategory':'budgetPerCategory','lbl-totalExpense':'totalExpense',
+                'lbl-transactions':'transactions','lbl-avgExpense':'avgExpense',
+                'lbl-expenseDistribution':'expenseDistribution','lbl-familyInfo':'familyInfo',
+                'lbl-familyName':'familyName','lbl-currency':'currency','lbl-dataManagement':'dataManagement'
+            };
+            Object.entries(lblMap).forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = t(key);
             });
-            document.getElementById('total-budget').textContent = total.toFixed(2);
+
+            // buttons
+            const btnMap = {
+                'btn-startChallenge':'startChallenge','btn-checkIn':'checkInBtn','btn-recordBtn':'recordBtn',
+                'btn-save':'save','btn-saveSettings':'saveSettings','btn-startNewChallenge':'startNewChallenge',
+                'btn-clearData':'clearData'
+            };
+            Object.entries(btnMap).forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = t(key);
+            });
+
+            // placeholders
+            const phMap = {
+                'income-input':'inputIncomePlaceholder',
+                'chal-today-amount':'todayAmountPlaceholder'
+            };
+            Object.entries(phMap).forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                if (el) el.placeholder = t(key);
+            });
+
+            // select options for expense category
+            const expCat = document.getElementById('exp-cat');
+            if (expCat) {
+                const cats = ['housing','food','transport','education','entertainment','shopping','other'];
+                Array.from(expCat.options).forEach((opt, i) => { opt.text = t(cats[i]); });
+            }
+
+            // re-render active page
+            const activePage = document.querySelector('.page.active');
+            if (activePage) {
+                const id = activePage.id.replace('page-', '');
+                if (id === 'dashboard') renderDashboard();
+                else if (id === 'challenge') renderChallengePage();
+                else if (id === 'expenses') renderExpenses();
+                else if (id === 'budget') renderBudget();
+                else if (id === 'reports') renderReports();
+                else if (id === 'settings') renderSettings();
+            }
         }
 
-        function addGoal() {
-            const container = document.getElementById('goalsContainer');
-            const newGoal = document.createElement('div');
-            newGoal.className = 'goal-card';
-            newGoal.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <label style="font-weight: bold; color: #333;">🎯 目标名称</label>
-                        <input type="text" placeholder="例如：买游戏机、春游、新书包" class="goal-name">
-                    </div>
-                    <div>
-                        <label style="font-weight: bold; color: #333;">📅 目标完成日期</label>
-                        <input type="date" class="goal-date">
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label style="font-weight: bold; color: #333;">💵 目标金额</label>
-                        <input type="number" placeholder="0" class="goal-amount">
-                    </div>
-                    <div>
-                        <label style="font-weight: bold; color: #333;">💰 已存金额</label>
-                        <input type="number" placeholder="0" class="goal-saved" onchange="updateProgress(this)">
-                    </div>
-                </div>
-
-                <div style="margin-top: 15px;">
-                    <label style="font-weight: bold; color: #333;">进度</label>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%;">0%</div>
-                    </div>
-                </div>
-
-                <button style="margin-top: 15px; padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;" onclick="removeGoal(this)">❌ 删除目标</button>
-            `;
-            container.appendChild(newGoal);
+        // ── Navigation ────────────────────────────────────────────────────────
+        function showPage(name, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + name).classList.add('active');
+            btn.classList.add('active');
+            if (name === 'dashboard') renderDashboard();
+            else if (name === 'challenge') renderChallengePage();
+            else if (name === 'expenses') renderExpenses();
+            else if (name === 'budget') renderBudget();
+            else if (name === 'reports') renderReports();
+            else if (name === 'settings') renderSettings();
         }
 
-        function removeGoal(btn) {
-            btn.closest('.goal-card').remove();
+        // ── Challenge ─────────────────────────────────────────────────────────
+        function startChallenge() {
+            const name = document.getElementById('chal-name').value;
+            const target = parseFloat(document.getElementById('chal-target').value);
+            if (!name || !target || target <= 0) {
+                alert(currentLang === 'zh' ? '请填写完整信息' : 'Please fill in all information');
+                return;
+            }
+            state.challenge = { name, target, startDate: new Date().toISOString(), saved: 0 };
+            state.challengeDays = Array(30).fill(null).map(() => ({ saved: 0, checked: false }));
+            save();
+            renderChallengePage();
         }
 
-        function updateProgress(input) {
-            const card = input.closest('.goal-card');
-            const saved = parseFloat(input.value) || 0;
-            const amount = parseFloat(card.querySelector('.goal-amount').value) || 0;
-            const percentage = amount > 0 ? (saved / amount * 100).toFixed(0) : 0;
-            const progressFill = card.querySelector('.progress-fill');
-            progressFill.style.width = percentage + '%';
-            progressFill.textContent = percentage + '%';
+        function checkInChallenge() {
+            if (!state.challenge) return;
+            const dayIndex = Math.floor((new Date() - new Date(state.challenge.startDate)) / (1000 * 60 * 60 * 24));
+            if (dayIndex >= 30) { alert(currentLang === 'zh' ? '挑战已结束' : 'Challenge ended'); return; }
+            const amount = parseFloat(document.getElementById('chal-today-amount').value) || 0;
+            if (amount <= 0) { alert(currentLang === 'zh' ? '请输入有效金额' : 'Please enter a valid amount'); return; }
+            state.challengeDays[dayIndex].saved = amount;
+            state.challengeDays[dayIndex].checked = true;
+            state.challenge.saved += amount;
+            save();
+            document.getElementById('chal-today-amount').value = '';
+            renderChallengePage();
         }
+
+        function resetChallenge() {
+            state.challenge = null;
+            state.challengeDays = [];
+            save();
+            renderChallengePage();
+        }
+
+        function renderChallengePage() {
+            if (!state.challenge) {
+                document.getElementById('challenge-active-card').style.display = 'none';
+                document.getElementById('challenge-complete-card').style.display = 'none';
+                return;
+            }
+            const dayIndex = Math.floor((new Date() - new Date(state.challenge.startDate)) / (1000 * 60 * 60 * 24));
+            const isComplete = dayIndex >= 30;
+            const completed = state.challengeDays.filter(d => d.checked).length;
+            const progress = Math.min(100, Math.round(state.challenge.saved / state.challenge.target * 100));
+
+            if (isComplete) {
+                document.getElementById('challenge-active-card').style.display = 'none';
+                document.getElementById('challenge-complete-card').style.display = 'block';
+                const rate = Math.round(completed / 30 * 100);
+                const msg = rate === 100 ? t('perfect') : rate >= 80 ? t('excellent') : rate >= 50 ? t('good') : t('keepTrying');
+                document.getElementById('challenge-summary').innerHTML = `
+                    <div style="margin-bottom:20px;">
+                        <div style="font-size:14px;color:#666;margin-bottom:8px;">${t('completionRate')}</div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${rate}%;background:linear-gradient(90deg,#78C850,#4CAF50);"></div></div>
+                        <div style="font-size:14px;font-weight:600;color:#333;margin-top:8px;">${rate}% (${completed}/30 ${t('day')})</div>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <div style="font-size:14px;color:#666;margin-bottom:8px;">${t('targetRate')}</div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
+                        <div style="font-size:14px;font-weight:600;color:#333;margin-top:8px;">${progress}% (${fmt(state.challenge.saved)} / ${fmt(state.challenge.target)})</div>
+                    </div>
+                    <div style="padding:12px;background:#E8F5E9;border-radius:8px;color:#333;font-size:14px;">${msg}</div>`;
+            } else {
+                document.getElementById('challenge-active-card').style.display = 'block';
+                document.getElementById('challenge-complete-card').style.display = 'none';
+                document.getElementById('chal-name-display').textContent = state.challenge.name;
+                document.getElementById('chal-progress-text').textContent = `${t('day')} ${Math.min(dayIndex+1,30)} / 30`;
+                document.getElementById('chal-progress-bar').style.width = Math.min(100,(dayIndex+1)/30*100)+'%';
+                document.getElementById('chal-days-complete').textContent = completed;
+                document.getElementById('chal-saved-amount').textContent = fmt(state.challenge.saved);
+                document.getElementById('chal-remaining-target').textContent = fmt(Math.max(0, state.challenge.target - state.challenge.saved));
+                document.getElementById('challenge-days').innerHTML = state.challengeDays.map((day, i) => {
+                    const status = day.checked ? 'completed' : i <= dayIndex ? 'missed' : 'pending';
+                    return `<div class="challenge-day ${status}">
+                        <div class="day-number">${i+1}</div>
+                        <div class="day-info"><input type="number" placeholder="${fmt(0)}" value="${day.saved||''}" style="margin:0;" ${i===dayIndex?'':'disabled'}></div>
+                        <div class="day-status ${day.checked?'complete':'missed'}">${day.checked?t('checked'):i<dayIndex?t('missed'):''}</div>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        // ── Expenses ──────────────────────────────────────────────────────────
+        function addExpense() {
+            const cat = document.getElementById('exp-cat').value;
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+            const desc = document.getElementById('exp-desc').value || t(cat);
+            const date = document.getElementById('exp-date').value || new Date().toISOString().split('T')[0];
+            if (!amount || amount <= 0) return;
+            state.expenses.unshift({ id: Date.now(), cat, amount, desc, date });
+            save();
+            document.getElementById('exp-amount').value = '';
+            document.getElementById('exp-desc').value = '';
+            renderExpenses();
+            renderDashboard();
+        }
+
+        function renderExpenses() {
+            const list = document.getElementById('expenses-list');
+            if (!state.expenses.length) { list.innerHTML = '<div class="empty-state">' + t('noExpense') + '</div>'; return; }
+            list.innerHTML = state.expenses.slice(0,10).map(e => `
+                <div style="padding:12px 0;border-bottom:1px solid #E8D7C3;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-weight:600;color:#333;">${e.desc}</div>
+                        <div style="font-size:12px;color:#999;">${t(e.cat)} · ${e.date}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-weight:700;color:#EE5A6F;">${fmt(e.amount)}</div>
+                        <button class="btn btn-danger" onclick="deleteExpense(${e.id})">${t('delete')}</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function deleteExpense(id) {
+            state.expenses = state.expenses.filter(x => x.id !== id);
+            save(); renderExpenses(); renderDashboard();
+        }
+
+        // ── Budget ────────────────────────────────────────────────────────────
+        function saveIncome() {
+            state.income = parseFloat(document.getElementById('income-input').value) || 0;
+            save(); renderDashboard();
+        }
+
+        function renderBudget() {
+            document.getElementById('income-input').value = state.income || '';
+            const cats = ['housing','food','transport','education','entertainment','shopping','other'];
+            document.getElementById('budget-rows').innerHTML = cats.map(cat => {
+                const spent = state.expenses.filter(e=>e.cat===cat).reduce((a,e)=>a+e.amount,0);
+                const budget = state.budgets[cat] || 0;
+                const pct = budget > 0 ? Math.min(100, Math.round(spent/budget*100)) : 0;
+                return `<div style="padding:12px 0;border-bottom:1px solid #E8D7C3;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                        <span style="font-weight:600;">${t(cat)}</span>
+                        <span style="font-size:13px;color:#666;">${fmt(spent)} / ${fmt(budget)}</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;${pct>=100?'background:linear-gradient(90deg,#FF6B6B,#EE5A6F);':''}"></div></div>
+                    <input type="number" placeholder="0" value="${state.budgets[cat]||''}" style="margin-top:6px;" onchange="state.budgets['${cat}']=parseFloat(this.value)||0;save();renderBudget();">
+                </div>`;
+            }).join('');
+        }
+
+        // ── Reports ───────────────────────────────────────────────────────────
+        function renderReports() {
+            const total = state.expenses.reduce((a,e)=>a+e.amount,0);
+            const avg = state.expenses.length ? total/state.expenses.length : 0;
+            document.getElementById('rep-total').textContent = fmt(total);
+            document.getElementById('rep-count').textContent = state.expenses.length;
+            document.getElementById('rep-avg').textContent = fmt(avg);
+            const byCat = {};
+            state.expenses.forEach(e => { byCat[e.cat]=(byCat[e.cat]||0)+e.amount; });
+            const html = Object.entries(byCat).map(([cat,amt]) => {
+                const pct = total > 0 ? Math.round(amt/total*100) : 0;
+                return `<div style="padding:12px 0;border-bottom:1px solid #E8D7C3;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                        <span style="font-weight:600;">${t(cat)}</span>
+                        <span>${fmt(amt)} (${pct}%)</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
+                </div>`;
+            }).join('');
+            document.getElementById('reports-content').innerHTML = html || '<div class="empty-state">' + t('noData') + '</div>';
+        }
+
+        // ── Settings ──────────────────────────────────────────────────────────
+        function previewCurrency(val) {
+            // live preview — doesn't save yet
+        }
+
+        function renderSettings() {
+            document.getElementById('settings-name').value = state.familyName;
+            document.getElementById('settings-currency').value = state.currency;
+        }
+
+        function saveSettings() {
+            state.familyName = document.getElementById('settings-name').value || (currentLang==='zh'?'我的家庭':'My Family');
+            state.currency = document.getElementById('settings-currency').value;
+            save();
+            // re-render every page so currency symbol updates everywhere
+            renderDashboard();
+            renderExpenses();
+            renderBudget();
+            renderReports();
+            renderChallengePage();
+            alert(currentLang==='zh' ? '设置已保存！' : 'Settings saved!');
+        }
+
+        function clearAllData() {
+            if (confirm(t('confirmClear'))) { localStorage.clear(); location.reload(); }
+        }
+
+        // ── Dashboard ─────────────────────────────────────────────────────────
+        function renderDashboard() {
+            const spent = state.expenses.reduce((a,e)=>a+e.amount,0);
+            const remaining = state.income - spent;
+            const rate = state.income > 0 ? Math.round(remaining/state.income*100) : 0;
+            document.getElementById('dash-income').textContent = fmt(state.income);
+            document.getElementById('dash-spent').textContent = fmt(spent);
+            document.getElementById('dash-remaining').textContent = fmt(Math.max(0, remaining));
+            document.getElementById('dash-rate').textContent = rate + '%';
+
+            if (state.challenge) {
+                const dayIndex = Math.floor((new Date()-new Date(state.challenge.startDate))/(1000*60*60*24));
+                const progress = Math.min(100, Math.round(state.challenge.saved/state.challenge.target*100));
+                document.getElementById('dash-challenge').innerHTML = `
+                    <div style="margin-bottom:12px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span style="font-weight:600;">${state.challenge.name}</span>
+                            <span style="font-size:12px;color:#666;">${t('day')} ${Math.min(dayIndex+1,30)} / 30</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
+                        <div style="font-size:12px;color:#666;margin-top:6px;">${fmt(state.challenge.saved)} / ${fmt(state.challenge.target)}</div>
+                    </div>`;
+            } else {
+                document.getElementById('dash-challenge').innerHTML = '<div class="empty-state">' + t('noChallenge') + '</div>';
+            }
+            const tips = t('tips');
+            document.getElementById('dash-tip').textContent = tips[Math.floor(Math.random()*tips.length)];
+        }
+
+        // ── Init ──────────────────────────────────────────────────────────────
+        document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
+        load();
+        currentLang = localStorage.getItem('selectedLang') || 'zh';
+        document.querySelectorAll('.lang-btn').forEach(b => {
+            if ((currentLang==='zh' && b.textContent==='中文') || (currentLang==='en' && b.textContent==='English')) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+        updateUI();
+            if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('PWA已启用'))
+                .catch(err => console.log('PWA失败', err));
+        });
+    }
     </script>
 </body>
 </html>
