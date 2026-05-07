@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>家庭理财管理工具</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FF9F43">
     <style>
         * {
             margin: 0;
@@ -300,10 +298,138 @@
             background: rgba(255, 255, 255, 0.8);
             color: #FF9F43;
         }
+
+        /* ── Koin Mascot ── */
+        .koin-tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #FFFBF5;
+            border: 2px solid #FFD699;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .koin-tip-bubble {
+            flex: 1;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .koin-tip-bubble strong { color: #FF9F43; font-weight: 700; }
+        .koin-bounce {
+            animation: koinBounce 2s ease-in-out infinite;
+        }
+        @keyframes koinBounce {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        /* Onboarding overlay */
+        #koin-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #koin-overlay.show { display: flex; }
+        .koin-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 24px 24px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+        }
+        .koin-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin: 14px 0 8px;
+        }
+        .koin-modal-text {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            min-height: 72px;
+        }
+        .koin-modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .koin-modal-btn {
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .koin-modal-btn.primary { background: linear-gradient(135deg,#FF9F43,#EE5A6F); color: white; }
+        .koin-modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,159,67,0.4); }
+        .koin-modal-btn.secondary { background: #f5f5f5; color: #666; }
+        .koin-modal-btn.secondary:hover { background: #eee; }
+        .koin-dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 18px; }
+        .koin-dot { width: 9px; height: 9px; border-radius: 50%; background: #E8D7C3; transition: all 0.3s; }
+        .koin-dot.done { background: #78C850; }
+        .koin-dot.active { background: #FF9F43; transform: scale(1.35); }
+        .koin-step-label { font-size: 12px; color: #aaa; margin-bottom: 6px; }
+        /* Floating Koin button */
+        #koin-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 4px 16px rgba(255,159,67,0.45);
+            z-index: 1000;
+            padding: 4px;
+            transition: transform 0.2s;
+        }
+        #koin-fab:hover { transform: scale(1.1); }
+        #koin-fab-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 18px; height: 18px;
+            background: #EE5A6F;
+            border-radius: 50%;
+            font-size: 11px;
+            color: white;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid white;
+        }
     </style>
 </head>
 <body>
     <div class="app">
+
+        <!-- ── Koin Onboarding Overlay ── -->
+        <div id="koin-overlay">
+            <div class="koin-modal">
+                <div id="koin-anim" style="display:flex;justify-content:center;"></div>
+                <div class="koin-step-label" id="koin-step-lbl">Step 1 of 5</div>
+                <div class="koin-dots" id="koin-dots"></div>
+                <div class="koin-modal-title" id="koin-modal-title">Hi, I'm Koin!</div>
+                <div class="koin-modal-text" id="koin-modal-text"></div>
+                <div class="koin-modal-btns" id="koin-modal-btns"></div>
+            </div>
+        </div>
+
+        <!-- ── Koin Floating Button ── -->
+        <button id="koin-fab" onclick="koinShowStep(0)" title="Koin Guide">
+            <svg width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="22" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="34" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/><ellipse cx="28" cy="10" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,10)"/></svg>
+            <div id="koin-fab-badge">?</div>
+        </button>
         <div class="header">
             <div style="display: flex; justify-content: space-between; align-items: start;">
                 <div>
@@ -322,12 +448,17 @@
             <button class="nav-btn" onclick="showPage('challenge', this)">🎯 30天挑战</button>
             <button class="nav-btn" onclick="showPage('expenses', this)">💸 支出记录</button>
             <button class="nav-btn" onclick="showPage('budget', this)">📈 预算管理</button>
+            <button class="nav-btn" onclick="showPage('rule503020', this)">⚖️ 50/30/20</button>
             <button class="nav-btn" onclick="showPage('reports', this)">📉 数据报告</button>
             <button class="nav-btn" onclick="showPage('settings', this)">⚙️ 设置</button>
         </div>
 
         <!-- 仪表板 -->
         <div id="page-dashboard" class="page active">
+            <div class="koin-tip">
+                <svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/></svg>
+                <div class="koin-tip-bubble" id="koin-tip-dashboard"></div>
+            </div>
             <div class="metric-grid">
                 <div class="metric">
                     <div class="metric-label" id="lbl-monthlyIncome">月收入</div>
@@ -360,6 +491,10 @@
 
         <!-- 30天挑战 -->
         <div id="page-challenge" class="page">
+            <div class="koin-tip">
+                <svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>
+                <div class="koin-tip-bubble" id="koin-tip-challenge"></div>
+            </div>
             <div class="card">
                 <div class="section-title" id="lbl-createNewChallenge">🎯 创建新挑战</div>
                 <div class="form-grid">
@@ -424,6 +559,10 @@
 
         <!-- 支出记录 -->
         <div id="page-expenses" class="page">
+            <div class="koin-tip">
+                <svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>
+                <div class="koin-tip-bubble" id="koin-tip-expenses"></div>
+            </div>
             <div class="card">
                 <div class="section-title" id="lbl-recordExpense">记录支出</div>
                 <div class="form-grid">
@@ -465,6 +604,10 @@
 
         <!-- 预算管理 -->
         <div id="page-budget" class="page">
+            <div class="koin-tip">
+                <svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>
+                <div class="koin-tip-bubble" id="koin-tip-budget"></div>
+            </div>
             <div class="card">
                 <div class="section-title" id="lbl-incomeSettings">💰 月收入设置</div>
                 <div style="display: flex; gap: 10px;">
@@ -499,6 +642,97 @@
             <div class="card">
                 <div class="section-title" id="lbl-expenseDistribution">支出分布</div>
                 <div id="reports-content"></div>
+            </div>
+        </div>
+
+        <!-- 50/30/20 法则 -->
+        <div id="page-rule503020" class="page">
+
+            <!-- 说明横幅 -->
+            <div style="background:linear-gradient(135deg,#FF9F43 0%,#EE5A6F 50%,#78C850 100%);border-radius:14px;padding:20px;margin-bottom:20px;color:white;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:6px;" id="r-title">⚖️ 50/30/20 预算法则</div>
+                <div style="font-size:13px;opacity:.92;" id="r-desc">根据你的月收入，自动把钱分成三个桶：必要支出、想要支出、储蓄。</div>
+            </div>
+
+            <!-- 三桶卡片 -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px;">
+                <!-- 50% 需求 -->
+                <div style="background:white;border-radius:14px;padding:18px;border:2px solid #FF9F43;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+                    <div style="font-size:28px;font-weight:800;color:#FF9F43;">50%</div>
+                    <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-needs-title">🏠 需求 Needs</div>
+                    <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-needs-desc">房租、食物、交通、医疗等生活必需品</div>
+                    <div style="font-size:13px;color:#666;" id="r-needs-label">建议上限</div>
+                    <div style="font-size:22px;font-weight:700;color:#FF9F43;" id="r-needs-budget">—</div>
+                    <div style="font-size:13px;color:#666;margin-top:8px;" id="r-needs-actual-label">实际花费</div>
+                    <div style="font-size:18px;font-weight:600;" id="r-needs-actual">—</div>
+                    <div class="progress-bar" style="margin-top:10px;">
+                        <div class="progress-fill" id="r-needs-bar" style="width:0%;background:linear-gradient(90deg,#FF9F43,#EE5A6F);"></div>
+                    </div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;" id="r-needs-pct">0%</div>
+                    <div style="font-size:12px;font-weight:600;margin-top:8px;" id="r-needs-status"></div>
+                    <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-needs-cats">🏠 房屋 · 🍽️ 食物 · 🚗 交通</div>
+                </div>
+
+                <!-- 30% 想要 -->
+                <div style="background:white;border-radius:14px;padding:18px;border:2px solid #7C6FF7;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+                    <div style="font-size:28px;font-weight:800;color:#7C6FF7;">30%</div>
+                    <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-wants-title">🎮 想要 Wants</div>
+                    <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-wants-desc">娱乐、购物、外出餐厅等可选消费</div>
+                    <div style="font-size:13px;color:#666;" id="r-wants-label">建议上限</div>
+                    <div style="font-size:22px;font-weight:700;color:#7C6FF7;" id="r-wants-budget">—</div>
+                    <div style="font-size:13px;color:#666;margin-top:8px;" id="r-wants-actual-label">实际花费</div>
+                    <div style="font-size:18px;font-weight:600;" id="r-wants-actual">—</div>
+                    <div class="progress-bar" style="margin-top:10px;">
+                        <div class="progress-fill" id="r-wants-bar" style="width:0%;background:linear-gradient(90deg,#7C6FF7,#9B89FF);"></div>
+                    </div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;" id="r-wants-pct">0%</div>
+                    <div style="font-size:12px;font-weight:600;margin-top:8px;" id="r-wants-status"></div>
+                    <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-wants-cats">🎮 娱乐 · 🛒 购物</div>
+                </div>
+
+                <!-- 20% 储蓄 -->
+                <div style="background:white;border-radius:14px;padding:18px;border:2px solid #78C850;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+                    <div style="font-size:28px;font-weight:800;color:#78C850;">20%</div>
+                    <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-save-title">💰 储蓄 Savings</div>
+                    <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-save-desc">存款、投资、紧急备用金</div>
+                    <div style="font-size:13px;color:#666;" id="r-save-label">建议金额</div>
+                    <div style="font-size:22px;font-weight:700;color:#78C850;" id="r-save-budget">—</div>
+                    <div style="font-size:13px;color:#666;margin-top:8px;" id="r-save-actual-label">实际结余</div>
+                    <div style="font-size:18px;font-weight:600;" id="r-save-actual">—</div>
+                    <div class="progress-bar" style="margin-top:10px;">
+                        <div class="progress-fill" id="r-save-bar" style="width:0%;background:linear-gradient(90deg,#78C850,#4CAF50);"></div>
+                    </div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;" id="r-save-pct">0%</div>
+                    <div style="font-size:12px;font-weight:600;margin-top:8px;" id="r-save-status"></div>
+                    <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-save-cats">💰 收入 − 总支出</div>
+                </div>
+            </div>
+
+            <!-- 视觉比例条 -->
+            <div class="card">
+                <div class="section-title" id="r-breakdown-title">📊 你的实际分配比例</div>
+                <div style="height:36px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:10px;" id="r-split-bar">
+                    <div id="r-split-needs" style="background:#FF9F43;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
+                    <div id="r-split-wants" style="background:#7C6FF7;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
+                    <div id="r-split-save"  style="background:#78C850;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
+                </div>
+                <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;">
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#FF9F43;border-radius:3px;margin-right:4px;"></span><span id="r-leg-needs">需求</span></span>
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#7C6FF7;border-radius:3px;margin-right:4px;"></span><span id="r-leg-wants">想要</span></span>
+                    <span><span style="display:inline-block;width:12px;height:12px;background:#78C850;border-radius:3px;margin-right:4px;"></span><span id="r-leg-save">储蓄</span></span>
+                </div>
+            </div>
+
+            <!-- AI 建议 -->
+            <div class="card" id="r-advice-card">
+                <div class="section-title" id="r-advice-title">💡 个人化建议</div>
+                <div id="r-advice-content" style="font-size:14px;line-height:1.7;color:#444;"></div>
+            </div>
+
+            <!-- 没有收入时提示 -->
+            <div class="card" id="r-no-income-card" style="display:none;text-align:center;padding:40px;">
+                <div style="font-size:40px;margin-bottom:12px;">💸</div>
+                <div style="font-weight:600;color:#666;" id="r-no-income-msg">请先在「预算管理」里设置你的月收入，才能计算 50/30/20 分配。</div>
             </div>
         </div>
 
@@ -570,7 +804,25 @@
                 housing: '🏠 房屋', food: '🍽️ 食物', transport: '🚗 交通', education: '🎓 教育',
                 entertainment: '🎮 娱乐', shopping: '🛒 购物', other: '💳 其他',
                 delete: '删除', budget: '预算', spent2: '已花', saveSettings: '保存设置',
-                inputIncomePlaceholder: '输入月收入', todayAmountPlaceholder: '输入今天存款金额'
+                inputIncomePlaceholder: '输入月收入', todayAmountPlaceholder: '输入今天存款金额',
+                rule503020Nav: '⚖️ 50/30/20',
+                r_title: '⚖️ 50/30/20 预算法则',
+                r_desc: '根据你的月收入，自动把钱分成三个桶：必要支出、想要支出、储蓄。',
+                r_needs_title: '🏠 需求 Needs', r_needs_desc: '房租、食物、交通、医疗等生活必需品',
+                r_needs_label: '建议上限', r_needs_actual_label: '实际花费', r_needs_cats: '🏠 房屋 · 🍽️ 食物 · 🚗 交通',
+                r_wants_title: '🎮 想要 Wants', r_wants_desc: '娱乐、购物、外出餐厅等可选消费',
+                r_wants_label: '建议上限', r_wants_actual_label: '实际花费', r_wants_cats: '🎮 娱乐 · 🛒 购物',
+                r_save_title: '💰 储蓄 Savings', r_save_desc: '存款、投资、紧急备用金',
+                r_save_label: '建议金额', r_save_actual_label: '实际结余', r_save_cats: '💰 收入 − 总支出',
+                r_breakdown_title: '📊 你的实际分配比例',
+                r_leg_needs: '需求', r_leg_wants: '想要', r_leg_save: '储蓄',
+                r_advice_title: '💡 个人化建议',
+                r_no_income_msg: '请先在「预算管理」里设置你的月收入，才能计算 50/30/20 分配。',
+                r_status_ok: '✅ 控制得很好！', r_status_over: '⚠️ 超出建议范围', r_status_under: '👍 低于建议，太棒了！',
+                r_advice_all_ok: '🎉 你的三个预算桶都控制得很好！继续保持这个好习惯，财务健康就是这样一步一步建立的。',
+                r_advice_needs_over: '⚠️ 你的"需求"支出超出了收入的50%。可以考虑：搬到租金更低的地方、减少外食、优化交通方式（拼车/公交）。',
+                r_advice_wants_over: '🛍️ 你的"想要"支出偏高。试试"30天规则"：想买非必需品时，等30天再决定，很多冲动消费会自然消失。',
+                r_advice_save_low: '💰 你的储蓄率低于20%。建议先"给自己发工资"——每个月收入一进来就先转走20%到储蓄账户，再用剩下的钱生活。'
             },
             en: {
                 headerTitle: '💰 Family Finance Manager',
@@ -603,7 +855,25 @@
                 housing: '🏠 Housing', food: '🍽️ Food', transport: '🚗 Transport', education: '🎓 Education',
                 entertainment: '🎮 Entertainment', shopping: '🛒 Shopping', other: '💳 Other',
                 delete: 'Delete', budget: 'Budget', spent2: 'Spent', saveSettings: 'Save Settings',
-                inputIncomePlaceholder: 'Enter monthly income', todayAmountPlaceholder: "Enter today's savings"
+                inputIncomePlaceholder: 'Enter monthly income', todayAmountPlaceholder: "Enter today's savings",
+                rule503020Nav: '⚖️ 50/30/20',
+                r_title: '⚖️ 50/30/20 Budget Rule',
+                r_desc: 'Automatically split your monthly income into three buckets: needs, wants, and savings.',
+                r_needs_title: '🏠 Needs', r_needs_desc: 'Rent, food, transport, healthcare — essentials',
+                r_needs_label: 'Suggested limit', r_needs_actual_label: 'Actual spent', r_needs_cats: '🏠 Housing · 🍽️ Food · 🚗 Transport',
+                r_wants_title: '🎮 Wants', r_wants_desc: 'Entertainment, shopping, dining out — nice-to-haves',
+                r_wants_label: 'Suggested limit', r_wants_actual_label: 'Actual spent', r_wants_cats: '🎮 Entertainment · 🛒 Shopping',
+                r_save_title: '💰 Savings', r_save_desc: 'Savings, investments, emergency fund',
+                r_save_label: 'Suggested amount', r_save_actual_label: 'Actual surplus', r_save_cats: '💰 Income − Total Expenses',
+                r_breakdown_title: '📊 Your actual allocation',
+                r_leg_needs: 'Needs', r_leg_wants: 'Wants', r_leg_save: 'Savings',
+                r_advice_title: '💡 Personalised Advice',
+                r_no_income_msg: 'Please set your monthly income in Budget first to calculate your 50/30/20 split.',
+                r_status_ok: '✅ On track!', r_status_over: '⚠️ Over budget', r_status_under: '👍 Under budget — great!',
+                r_advice_all_ok: '🎉 All three buckets are on track! Keep up this great habit — financial health is built one month at a time.',
+                r_advice_needs_over: '⚠️ Your Needs spending exceeds 50% of income. Consider: cheaper housing, cooking at home more, or using public transport.',
+                r_advice_wants_over: '🛍️ Your Wants spending is high. Try the "30-day rule": wait 30 days before buying non-essentials — most impulse buys disappear.',
+                r_advice_save_low: '💰 Your savings rate is below 20%. Try paying yourself first — transfer 20% to savings the moment your income arrives, then live on the rest.'
             }
         };
 
@@ -649,13 +919,14 @@
             event.target.classList.add('active');
             localStorage.setItem('selectedLang', lang);
             updateUI();
+            ['dashboard','challenge','expenses','budget'].forEach(koinUpdatePageTip);
         }
 
         function updateUI() {
             document.getElementById('header-title').textContent = t('headerTitle');
             document.getElementById('header-desc').textContent = t('headerDesc');
 
-            const navKeys = ['dashboard','challenge','expenses','budget','reports','settings'];
+            const navKeys = ['dashboard','challenge','expenses','budget','rule503020Nav','reports','settings'];
             document.querySelectorAll('.nav-btn').forEach((btn, i) => { btn.textContent = t(navKeys[i]); });
 
             // labels
@@ -715,6 +986,7 @@
                 else if (id === 'challenge') renderChallengePage();
                 else if (id === 'expenses') renderExpenses();
                 else if (id === 'budget') renderBudget();
+                else if (id === 'rule503020') renderRule503020();
                 else if (id === 'reports') renderReports();
                 else if (id === 'settings') renderSettings();
             }
@@ -726,10 +998,11 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('page-' + name).classList.add('active');
             btn.classList.add('active');
-            if (name === 'dashboard') renderDashboard();
-            else if (name === 'challenge') renderChallengePage();
-            else if (name === 'expenses') renderExpenses();
-            else if (name === 'budget') renderBudget();
+            if (name === 'dashboard') { renderDashboard(); koinUpdatePageTip('dashboard'); }
+            else if (name === 'challenge') { renderChallengePage(); koinUpdatePageTip('challenge'); }
+            else if (name === 'expenses') { renderExpenses(); koinUpdatePageTip('expenses'); }
+            else if (name === 'budget') { renderBudget(); koinUpdatePageTip('budget'); }
+            else if (name === 'rule503020') renderRule503020();
             else if (name === 'reports') renderReports();
             else if (name === 'settings') renderSettings();
         }
@@ -746,6 +1019,7 @@
             state.challengeDays = Array(30).fill(null).map(() => ({ saved: 0, checked: false }));
             save();
             renderChallengePage();
+            koinReact('challengeStart');
         }
 
         function checkInChallenge() {
@@ -760,6 +1034,7 @@
             save();
             document.getElementById('chal-today-amount').value = '';
             renderChallengePage();
+            koinReact('challengeCheckin');
         }
 
         function resetChallenge() {
@@ -830,6 +1105,7 @@
             document.getElementById('exp-desc').value = '';
             renderExpenses();
             renderDashboard();
+            koinReact('expenseAdded');
         }
 
         function renderExpenses() {
@@ -856,7 +1132,7 @@
         // ── Budget ────────────────────────────────────────────────────────────
         function saveIncome() {
             state.income = parseFloat(document.getElementById('income-input').value) || 0;
-            save(); renderDashboard();
+            save(); renderDashboard(); koinReact('incomeSet');
         }
 
         function renderBudget() {
@@ -913,17 +1189,139 @@
             state.familyName = document.getElementById('settings-name').value || (currentLang==='zh'?'我的家庭':'My Family');
             state.currency = document.getElementById('settings-currency').value;
             save();
-            // re-render every page so currency symbol updates everywhere
-            renderDashboard();
-            renderExpenses();
-            renderBudget();
-            renderReports();
-            renderChallengePage();
-            alert(currentLang==='zh' ? '设置已保存！' : 'Settings saved!');
+            renderDashboard(); renderExpenses(); renderBudget(); renderReports(); renderChallengePage();
+            koinReact('settingsSaved');
         }
 
         function clearAllData() {
             if (confirm(t('confirmClear'))) { localStorage.clear(); location.reload(); }
+        }
+
+        // ── 50/30/20 ──────────────────────────────────────────────────────────
+        function renderRule503020() {
+            // Category mapping: needs vs wants
+            const NEEDS_CATS = ['housing','food','transport'];
+            const WANTS_CATS = ['entertainment','shopping'];
+            // education & other are neutral — counted in needs for conservative calculation
+            const NEUTRAL_CATS = ['education','other'];
+
+            const income = state.income;
+            const noIncomeCard = document.getElementById('r-no-income-card');
+            const adviceCard = document.getElementById('r-advice-card');
+
+            if (!income || income <= 0) {
+                noIncomeCard.style.display = 'block';
+                adviceCard.style.display = 'none';
+                document.getElementById('r-no-income-msg').textContent = t('r_no_income_msg');
+                ['r-needs-budget','r-wants-budget','r-save-budget',
+                 'r-needs-actual','r-wants-actual','r-save-actual',
+                 'r-needs-pct','r-wants-pct','r-save-pct',
+                 'r-needs-status','r-wants-status','r-save-status'].forEach(id => {
+                    const el = document.getElementById(id); if(el) el.textContent = '—';
+                });
+                ['r-needs-bar','r-wants-bar','r-save-bar'].forEach(id => {
+                    const el = document.getElementById(id); if(el) el.style.width = '0%';
+                });
+                document.getElementById('r-split-needs').style.width='33%';
+                document.getElementById('r-split-wants').style.width='33%';
+                document.getElementById('r-split-save').style.width='34%';
+                document.getElementById('r-split-needs').textContent='50%';
+                document.getElementById('r-split-wants').textContent='30%';
+                document.getElementById('r-split-save').textContent='20%';
+                return;
+            }
+
+            noIncomeCard.style.display = 'none';
+            adviceCard.style.display = 'block';
+
+            const needsBudget  = income * 0.50;
+            const wantsBudget  = income * 0.30;
+            const saveBudget   = income * 0.20;
+
+            const needsSpent = state.expenses.filter(e => NEEDS_CATS.includes(e.cat) || NEUTRAL_CATS.includes(e.cat))
+                                             .reduce((a,e)=>a+e.amount,0);
+            const wantsSpent = state.expenses.filter(e => WANTS_CATS.includes(e.cat))
+                                             .reduce((a,e)=>a+e.amount,0);
+            const totalSpent = state.expenses.reduce((a,e)=>a+e.amount,0);
+            const actualSave = Math.max(0, income - totalSpent);
+
+            const needsPct = needsBudget > 0 ? Math.min(150, Math.round(needsSpent/needsBudget*100)) : 0;
+            const wantsPct = wantsBudget > 0 ? Math.min(150, Math.round(wantsSpent/wantsBudget*100)) : 0;
+            const savePct  = saveBudget  > 0 ? Math.min(150, Math.round(actualSave/saveBudget*100))  : 0;
+
+            function statusText(pct) {
+                if (pct <= 100) return pct <= 80 ? t('r_status_under') : t('r_status_ok');
+                return t('r_status_over');
+            }
+            function statusColor(pct) {
+                return pct > 100 ? '#EE5A6F' : pct <= 80 ? '#78C850' : '#FF9F43';
+            }
+
+            document.getElementById('r-needs-budget').textContent = fmt(needsBudget);
+            document.getElementById('r-wants-budget').textContent = fmt(wantsBudget);
+            document.getElementById('r-save-budget').textContent  = fmt(saveBudget);
+
+            document.getElementById('r-needs-actual').textContent = fmt(needsSpent);
+            document.getElementById('r-wants-actual').textContent = fmt(wantsSpent);
+            document.getElementById('r-save-actual').textContent  = fmt(actualSave);
+
+            document.getElementById('r-needs-pct').textContent = needsPct + '% ' + t('r_needs_actual_label');
+            document.getElementById('r-wants-pct').textContent = wantsPct + '% ' + t('r_wants_actual_label');
+            document.getElementById('r-save-pct').textContent  = savePct  + '% ' + t('r_save_actual_label');
+
+            const nBar = document.getElementById('r-needs-bar');
+            const wBar = document.getElementById('r-wants-bar');
+            const sBar = document.getElementById('r-save-bar');
+            nBar.style.width = Math.min(100,needsPct)+'%';
+            nBar.style.background = needsPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#FF9F43,#EE5A6F)';
+            wBar.style.width = Math.min(100,wantsPct)+'%';
+            wBar.style.background = wantsPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#7C6FF7,#9B89FF)';
+            sBar.style.width = Math.min(100,savePct)+'%';
+
+            document.getElementById('r-needs-status').textContent = statusText(needsPct);
+            document.getElementById('r-needs-status').style.color = statusColor(needsPct);
+            document.getElementById('r-wants-status').textContent = statusText(wantsPct);
+            document.getElementById('r-wants-status').style.color = statusColor(wantsPct);
+            document.getElementById('r-save-status').textContent  = statusText(savePct);
+            document.getElementById('r-save-status').style.color  = statusColor(savePct);
+
+            // Split bar (proportional to income)
+            const needsReal = income > 0 ? Math.round(needsSpent/income*100) : 0;
+            const wantsReal = income > 0 ? Math.round(wantsSpent/income*100) : 0;
+            const saveReal  = income > 0 ? Math.round(actualSave/income*100) : 0;
+            const total3 = needsReal + wantsReal + saveReal || 100;
+            const nW = Math.round(needsReal/total3*100);
+            const wW = Math.round(wantsReal/total3*100);
+            const sW = 100 - nW - wW;
+            const splitN = document.getElementById('r-split-needs');
+            const splitW = document.getElementById('r-split-wants');
+            const splitS = document.getElementById('r-split-save');
+            splitN.style.width = nW+'%'; splitN.textContent = nW>6 ? needsReal+'%' : '';
+            splitW.style.width = wW+'%'; splitW.textContent = wW>6 ? wantsReal+'%' : '';
+            splitS.style.width = sW+'%'; splitS.textContent = sW>6 ? saveReal+'%' : '';
+
+            // Advice
+            const msgs = [];
+            if (needsPct > 100) msgs.push(t('r_advice_needs_over'));
+            if (wantsPct > 100) msgs.push(t('r_advice_wants_over'));
+            if (savePct < 80)   msgs.push(t('r_advice_save_low'));
+            if (msgs.length === 0) msgs.push(t('r_advice_all_ok'));
+            document.getElementById('r-advice-content').innerHTML = msgs.map(m=>`<p style="margin-bottom:10px;">${m}</p>`).join('');
+
+            // Update static labels via i18n
+            const lbls = {
+                'r-title':'r_title','r-desc':'r_desc',
+                'r-needs-title':'r_needs_title','r-needs-desc':'r_needs_desc',
+                'r-needs-label':'r_needs_label','r-needs-actual-label':'r_needs_actual_label','r-needs-cats':'r_needs_cats',
+                'r-wants-title':'r_wants_title','r-wants-desc':'r_wants_desc',
+                'r-wants-label':'r_wants_label','r-wants-actual-label':'r_wants_actual_label','r-wants-cats':'r_wants_cats',
+                'r-save-title':'r_save_title','r-save-desc':'r_save_desc',
+                'r-save-label':'r_save_label','r-save-actual-label':'r_save_actual_label','r-save-cats':'r_save_cats',
+                'r-breakdown-title':'r_breakdown_title',
+                'r-leg-needs':'r_leg_needs','r-leg-wants':'r_leg_wants','r-leg-save':'r_leg_save',
+                'r-advice-title':'r_advice_title'
+            };
+            Object.entries(lbls).forEach(([id,key])=>{ const el=document.getElementById(id); if(el) el.textContent=t(key); });
         }
 
         // ── Dashboard ─────────────────────────────────────────────────────────
@@ -955,7 +1353,138 @@
             document.getElementById('dash-tip').textContent = tips[Math.floor(Math.random()*tips.length)];
         }
 
-        // ── Init ──────────────────────────────────────────────────────────────
+        // ── Koin Mascot System ────────────────────────────────────────────────
+
+        const KOIN_SVG = {
+            happy: `<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="22" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="34" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/><ellipse cx="28" cy="10" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,10)"/></svg>`,
+            excited: `<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="28" cy="36" rx="5" ry="3" fill="#FF7043" opacity=".5"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`,
+            thinking: `<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`,
+            celebrate: `<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><circle cx="20" cy="23" r="1.5" fill="white"/><circle cx="36" cy="23" r="1.5" fill="white"/><path d="M16 33 Q28 45 40 33" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="28" cy="37" rx="6" ry="3.5" fill="#FF7043" opacity=".5"/><circle cx="14" cy="14" r="2" fill="#EE5A6F"/><circle cx="42" cy="12" r="2" fill="#78C850"/><circle cx="10" cy="28" r="1.5" fill="#7C6FF7"/><circle cx="46" cy="26" r="1.5" fill="#FF9F43"/><circle cx="20" cy="8" r="1.5" fill="#FFD166"/><circle cx="38" cy="8" r="1.5" fill="#EE5A6F"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`
+        };
+
+        const KOIN_STEPS = {
+            zh: [
+                { mood:'happy',  title:'嗨！我是 Koin！🪙',        text:'我是你的专属理财小伙伴！我会陪你走过每一个步骤，让管钱变得超级简单又好玩！准备好了吗？', btn:'我准备好了！→' },
+                { mood:'thinking',title:'先设置你的收入 💰',        text:'先去「预算管理」输入你每个月有多少钱——零用钱、兼职收入都算！这是一切的起点。', btn:'明白了！→' },
+                { mood:'excited', title:'记录每一笔花费！🧋',       text:'每次花钱都记录下来，哪怕只是 RM 2 的珍珠奶茶！小钱加起来很惊人的，我亲眼见过！', btn:'我会记的！→' },
+                { mood:'thinking',title:'认识 50/30/20 法则 ⚖️',   text:'50% 用于必需品，30% 用于想要的东西，20% 存起来。那 20% 是未来的你在说谢谢！', btn:'懂了！→' },
+                { mood:'celebrate',title:'开始 30 天挑战！🎯',      text:'去「30天挑战」设定一个存钱目标，每天打卡！坚持就是胜利，我会一直为你加油的！🎉', btn:'出发！🚀' }
+            ],
+            en: [
+                { mood:'happy',  title:"Hi, I'm Koin! 🪙",          text:"I'm your personal money buddy! I'll guide you through every step and make managing money super fun and easy. Ready?", btn:"Let's go! →" },
+                { mood:'thinking',title:'Set your income first 💰',  text:'Head to Budget and enter how much money you get each month — allowance, part-time job, anything! That\'s your starting number.', btn:'Got it! →' },
+                { mood:'excited', title:'Record every expense! 🧋',  text:'Every time you spend money, record it here — even that RM 2 bubble tea counts! Small spending adds up fast, trust me!', btn:"I'll do it! →" },
+                { mood:'thinking',title:'Learn the 50/30/20 Rule ⚖️',text:'50% for needs, 30% for wants, 20% for savings. That 20% is future-you saying thank you right now!', btn:'Makes sense! →' },
+                { mood:'celebrate',title:'Start the 30-Day Challenge! 🎯', text:'Go to the 30-Day Challenge, set a savings goal, and check in every day! Consistency wins — I\'ll be cheering for you! 🎉', btn:'Let\'s go! 🚀' }
+            ]
+        };
+
+        const KOIN_PAGE_TIPS = {
+            zh: {
+                dashboard: '<strong>Koin 说：</strong> 这里是你的财务总览！每次打开 app 先看看这里，了解自己的钱包状态 💰',
+                challenge: '<strong>Koin 说：</strong> 30天挑战是建立存钱习惯最好的方法！每天打卡，坚持就是赢家！加油！💪',
+                expenses:  '<strong>Koin 说：</strong> 记录支出是理财的第一步！每一分钱都值得被记录，哪怕只是买了一瓶水 🥤',
+                budget:    '<strong>Koin 说：</strong> 先输入你的月收入，然后给每一类支出设定上限。预算就是给钱安排"工作"！📊',
+                rule503020:'<strong>Koin 说：</strong> 50% 需求 · 30% 想要 · 20% 储蓄——这是全世界理财专家都认可的黄金法则！⚖️',
+                reports:   '<strong>Koin 说：</strong> 看看你的钱都去哪里了！数据报告帮你发现自己都没注意到的消费习惯 🔍',
+                settings:  '<strong>Koin 说：</strong> 在这里设置你的家庭名称和货币，让 app 更个人化！✨'
+            },
+            en: {
+                dashboard: '<strong>Koin says:</strong> This is your financial overview! Check here every time you open the app to know where you stand 💰',
+                challenge: '<strong>Koin says:</strong> The 30-Day Challenge is the best way to build a saving habit! Check in daily — consistency wins! 💪',
+                expenses:  '<strong>Koin says:</strong> Recording expenses is step one of managing money! Every ringgit is worth tracking, even a bottle of water 🥤',
+                budget:    '<strong>Koin says:</strong> Enter your monthly income first, then set limits for each spending category. A budget gives your money a "job"! 📊',
+                rule503020:'<strong>Koin says:</strong> 50% needs · 30% wants · 20% savings — the golden rule recognised by financial experts worldwide! ⚖️',
+                reports:   '<strong>Koin says:</strong> See exactly where your money goes! Reports reveal spending habits you never even noticed 🔍',
+                settings:  '<strong>Koin says:</strong> Set your family name and currency here to personalise the app! ✨'
+            }
+        };
+
+        const KOIN_REACTIONS = {
+            zh: {
+                expenseAdded:    { mood:'excited',   text:'记录成功！继续保持，你做得很棒！🌟' },
+                challengeStart:  { mood:'excited',   text:'挑战开始！我相信你一定能坚持30天！加油！🔥' },
+                challengeCheckin:{ mood:'celebrate', text:'今天打卡成功！每一天都算数，你太厉害了！🎉' },
+                incomeSet:       { mood:'happy',     text:'收入设置好了！现在我们知道你有多少钱可以分配了 💰' },
+                budgetSaved:     { mood:'happy',     text:'预算设置好了！有了预算，花钱更有方向感！📊' },
+                settingsSaved:   { mood:'happy',     text:'设置已保存！一切都准备好了，我们出发吧！🚀' },
+                challengeDone:   { mood:'celebrate', text:'🎉 太厉害了！你完成了30天挑战！你是真正的理财高手！' }
+            },
+            en: {
+                expenseAdded:    { mood:'excited',   text:"Recorded! Keep it up, you're doing amazing! 🌟" },
+                challengeStart:  { mood:'excited',   text:"Challenge started! I know you can keep it up for 30 days! Let's go! 🔥" },
+                challengeCheckin:{ mood:'celebrate', text:"Check-in done! Every day counts — you're crushing it! 🎉" },
+                incomeSet:       { mood:'happy',     text:"Income set! Now we know exactly how much you have to work with 💰" },
+                budgetSaved:     { mood:'happy',     text:"Budget saved! With a budget, every ringgit has a purpose! 📊" },
+                settingsSaved:   { mood:'happy',     text:"Settings saved! Everything's ready — let's get started! 🚀" },
+                challengeDone:   { mood:'celebrate', text:'🎉 Incredible! You completed the 30-Day Challenge! You\'re a true money master!' }
+            }
+        };
+
+        let koinCurrentStep = 0;
+
+        function koinSVG(mood) { return KOIN_SVG[mood] || KOIN_SVG.happy; }
+
+        function koinShowStep(i) {
+            const steps = KOIN_STEPS[currentLang] || KOIN_STEPS.zh;
+            koinCurrentStep = i;
+            const s = steps[i];
+            document.getElementById('koin-anim').innerHTML = koinSVG(s.mood);
+            document.getElementById('koin-modal-title').textContent = s.title;
+            document.getElementById('koin-modal-text').textContent = s.text;
+            document.getElementById('koin-step-lbl').textContent =
+                currentLang === 'zh' ? `第 ${i+1} / ${steps.length} 步` : `Step ${i+1} of ${steps.length}`;
+            // dots
+            document.getElementById('koin-dots').innerHTML =
+                steps.map((_,j) => `<div class="koin-dot ${j<i?'done':j===i?'active':''}"></div>`).join('');
+            // buttons
+            const btns = document.getElementById('koin-modal-btns');
+            btns.innerHTML = '';
+            if (i > 0) {
+                const b = document.createElement('button');
+                b.className = 'koin-modal-btn secondary';
+                b.textContent = currentLang === 'zh' ? '← 上一步' : '← Back';
+                b.onclick = () => koinShowStep(i - 1);
+                btns.appendChild(b);
+            }
+            const nb = document.createElement('button');
+            nb.className = 'koin-modal-btn primary';
+            nb.textContent = i < steps.length - 1 ? s.btn : (currentLang === 'zh' ? '完成！关闭 ✓' : 'Done! Close ✓');
+            nb.onclick = i < steps.length - 1
+                ? () => koinShowStep(i + 1)
+                : () => { document.getElementById('koin-overlay').classList.remove('show'); localStorage.setItem('koinOnboardingDone','1'); document.getElementById('koin-fab-badge').style.display='none'; };
+            btns.appendChild(nb);
+            // skip button on first step only
+            if (i === 0) {
+                const sk = document.createElement('button');
+                sk.className = 'koin-modal-btn secondary';
+                sk.textContent = currentLang === 'zh' ? '跳过' : 'Skip';
+                sk.onclick = () => { document.getElementById('koin-overlay').classList.remove('show'); localStorage.setItem('koinOnboardingDone','1'); document.getElementById('koin-fab-badge').style.display='none'; };
+                btns.appendChild(sk);
+            }
+            document.getElementById('koin-overlay').classList.add('show');
+        }
+
+        function koinReact(eventKey) {
+            const reactions = KOIN_REACTIONS[currentLang] || KOIN_REACTIONS.zh;
+            const r = reactions[eventKey];
+            if (!r) return;
+            // show a floating toast with Koin face
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:90px;right:24px;background:white;border:2px solid #FFD699;border-radius:14px;padding:12px 16px;display:flex;gap:10px;align-items:center;max-width:280px;z-index:2000;box-shadow:0 4px 20px rgba(255,159,67,0.3);animation:koinBounce .4s ease;';
+            toast.innerHTML = `<span style="flex-shrink:0">${koinSVG(r.mood).replace('width="80" height="80"','width="40" height="40"')}</span><span style="font-size:13px;color:#444;line-height:1.5;">${r.text}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.transition='opacity .5s'; toast.style.opacity='0'; setTimeout(()=>toast.remove(),500); }, 3000);
+        }
+
+        function koinUpdatePageTip(pageId) {
+            const tips = KOIN_PAGE_TIPS[currentLang] || KOIN_PAGE_TIPS.zh;
+            const tip = tips[pageId];
+            const el = document.getElementById('koin-tip-' + pageId);
+            if (el && tip) el.innerHTML = tip;
+        }
+
+        // ── Init Koin ──────────────────────────────────────────────────────────
         document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
         load();
         currentLang = localStorage.getItem('selectedLang') || 'zh';
@@ -967,13 +1496,14 @@
             }
         });
         updateUI();
-            if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(() => console.log('PWA已启用'))
-                .catch(err => console.log('PWA失败', err));
-        });
-    }
+        // Update all page tips on load
+        ['dashboard','challenge','expenses','budget'].forEach(koinUpdatePageTip);
+        // Show onboarding if first time
+        if (!localStorage.getItem('koinOnboardingDone')) {
+            setTimeout(() => koinShowStep(0), 800);
+        } else {
+            document.getElementById('koin-fab-badge').style.display = 'none';
+        }
     </script>
 </body>
 </html>
