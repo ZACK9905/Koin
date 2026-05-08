@@ -3,7 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>家庭理财管理工具</title>
+    <title>Koin 💰 Family Finance</title>
+    <script>
+        // Generate Koin favicon as SVG → data URL
+        (function(){
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="30" fill="#FF9F43"/>
+                <circle cx="32" cy="32" r="26" fill="#FFB76B" opacity=".55"/>
+                <ellipse cx="23" cy="29" rx="4" ry="4.5" fill="#7A4A00"/>
+                <ellipse cx="41" cy="29" rx="4" ry="4.5" fill="#7A4A00"/>
+                <circle cx="23" cy="27" r="1.6" fill="white"/>
+                <circle cx="41" cy="27" r="1.6" fill="white"/>
+                <path d="M20 38 Q32 48 44 38" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <ellipse cx="24" cy="38" rx="4" ry="2" fill="#FF7043" opacity=".4"/>
+                <ellipse cx="40" cy="38" rx="4" ry="2" fill="#FF7043" opacity=".4"/>
+                <ellipse cx="32" cy="10" rx="6" ry="7" fill="#FFD166" transform="rotate(-10,32,10)"/>
+                <ellipse cx="32" cy="10" rx="3.5" ry="5" fill="#FFB76B" transform="rotate(-10,32,10)"/>
+            </svg>`;
+            const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+            const link = document.createElement('link');
+            link.rel = 'icon'; link.type = 'image/svg+xml'; link.href = url;
+            document.head.appendChild(link);
+            // Also Apple touch icon
+            const apple = document.createElement('link');
+            apple.rel = 'apple-touch-icon'; apple.href = url;
+            document.head.appendChild(apple);
+        })();
+    </script>
     <style>
         * {
             margin: 0;
