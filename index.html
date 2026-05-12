@@ -176,7 +176,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   <div class="confirm-box">
     <div style="font-size:40px;margin-bottom:8px" id="confirm-icon">⚠️</div>
     <h3 id="confirm-title"></h3><p id="confirm-msg"></p>
-    <div class="confirm-btns">
+    <div class="confirm-btns"id="confirm-btns">
       <button class="btn btn-danger" id="confirm-yes"></button>
       <button class="btn" style="background:#f0f0f0;color:#666" id="confirm-no"></button>
     </div>
@@ -522,8 +522,19 @@ function createNewMonth(confirm_){
   _doCreateNewMonth();
 }
 function _doCreateNewMonth(){
-  const key=todayMonthKey();globalState.currentMonthKey=key;getMonth(key);viewingMonth=key;saveAll();
-  renderAllMonthBars();renderDashboard();renderSettings();koinReact('incomeSet');
+  const current=globalState.currentMonthKey;
+  const [year,month]=current.split('-').map(Number);
+  let nextYear=year,nextMonth=month+1;
+  if(nextMonth>12){nextMonth=1;nextYear++;}
+  const key=`${nextYear}-${String(nextMonth).padStart(2,'0')}`;
+  globalState.currentMonthKey=key;
+  getMonth(key);
+  viewingMonth=key;
+  saveAll();
+  renderAllMonthBars();
+  renderDashboard();
+  renderSettings();
+  koinReact('incomeSet');
 }
 function allMonthKeys(){return Object.keys(monthData).sort().reverse()}
 function renderMonthBar(barId,onchange){
@@ -624,21 +635,48 @@ function _render503020ForMonth(key){
   const NEEDS=['housing','food','transport'];const WANTS=['entertainment','shopping'];const NEUTRAL=['education','other'];
   const needsSpent=md.expenses.filter(e=>NEEDS.includes(e.cat)||NEUTRAL.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
   const wantsSpent=md.expenses.filter(e=>WANTS.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
-  const total=md.expenses.reduce((a,e)=>a+e.amount,0);const actualSave=Math.max(0,income-total);
+  const total = md.expenses.reduce((a,e)=>a+e.amount,0);const actualSave = income - total;
   const nB=income*.5,wB=income*.3,sB=income*.2;
   const nPct=nB>0?Math.min(150,Math.round(needsSpent/nB*100)):0;
   const wPct=wB>0?Math.min(150,Math.round(wantsSpent/wB*100)):0;
   const sPct=sB>0?Math.min(150,Math.round(actualSave/sB*100)):0;
-  const stTxt=p=>p>100?t('r_status_over'):p<=80?t('r_status_under'):t('r_status_ok');
+  function getStatusText(type, p) {
+  // Needs / Wants
+  if (type === 'spending') {
+    if (p > 100) return t('r_status_over');
+    if (p <= 80) return t('r_status_under');
+    return t('r_status_ok');
+  }
+
+  // Savings
+  if (type === 'saving') {
+    if (p >= 100) return currentLang === 'zh'
+      ? '🎉 储蓄达标！'
+      : '🎉 Savings target achieved!';
+
+    if (p >= 50) return currentLang === 'zh'
+      ? '👍 有在存钱，继续加油！'
+      : '👍 Good progress on savings!';
+
+    return currentLang === 'zh'
+      ? '⚠️ 储蓄不足'
+      : '⚠️ Savings too low';
+  }
+}
   const stClr=p=>p>100?'#EE5A6F':p<=80?'#78C850':'#FF9F43';
   document.getElementById('r-needs-budget').textContent=fmt(nB);document.getElementById('r-wants-budget').textContent=fmt(wB);document.getElementById('r-save-budget').textContent=fmt(sB);
-  document.getElementById('r-needs-actual').textContent=fmt(needsSpent);document.getElementById('r-wants-actual').textContent=fmt(wantsSpent);document.getElementById('r-save-actual').textContent=fmt(actualSave);
+  document.getElementById('r-needs-actual').textContent=fmt(needsSpent);document.getElementById('r-wants-actual').textContent=fmt(wantsSpent);const saveActualEl = document.getElementById('r-save-actual');
+saveActualEl.textContent = fmt(actualSave);
+saveActualEl.style.color =
+  actualSave < 0
+    ? '#FF6B6B'
+    : '#78C850';
   const nb=document.getElementById('r-needs-bar');nb.style.width=Math.min(100,nPct)+'%';nb.style.background=nPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#FF9F43,#EE5A6F)';
   const wb=document.getElementById('r-wants-bar');wb.style.width=Math.min(100,wPct)+'%';wb.style.background=wPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#7C6FF7,#9B89FF)';
   document.getElementById('r-save-bar').style.width=Math.min(100,sPct)+'%';
-  const ns=document.getElementById('r-needs-status');ns.textContent=stTxt(nPct);ns.style.color=stClr(nPct);
-  const ws=document.getElementById('r-wants-status');ws.textContent=stTxt(wPct);ws.style.color=stClr(wPct);
-  const ss=document.getElementById('r-save-status');ss.textContent=stTxt(sPct);ss.style.color=stClr(sPct);
+  const ns=document.getElementById('r-needs-status');ns.textContent = getStatusText('spending', nPct);ns.style.color=stClr(nPct);
+  const ws=document.getElementById('r-wants-status');ws.textContent = getStatusText('spending', wPct);ws.style.color=stClr(wPct);
+  const ss=document.getElementById('r-save-status');ss.textContent = getStatusText('saving', sPct);ss.style.color=stClr(sPct);
   const nR=income>0?Math.round(needsSpent/income*100):0;const wR=income>0?Math.round(wantsSpent/income*100):0;const sR=income>0?Math.round(actualSave/income*100):0;
   const tot3=nR+wR+sR||100;const nW=Math.round(nR/tot3*100),wW=Math.round(wR/tot3*100),sW=100-nW-wW;
   const sn=document.getElementById('r-split-needs');sn.style.width=nW+'%';sn.textContent=nW>8?nR+'%':'';
@@ -703,15 +741,33 @@ function startChallenge(){
   document.getElementById('chal-name').value='';document.getElementById('chal-target').value='';
   saveAll();renderChallengePage();koinReact('challengeStart');
 }
-function restartChallenge(){const ac=activeChallenge();if(!ac)return;_showRestartOptions(ac)}
-function _showRestartOptions(ac){
-  const modal=document.getElementById('confirm-modal');
-  document.getElementById('confirm-icon').textContent='🔄';document.getElementById('confirm-title').textContent=t('confirmRestart');document.getElementById('confirm-msg').textContent='';
-  document.getElementById('confirm-btns').innerHTML=`
-    <button class="btn btn-warning" onclick="_doRestart(${ac.id},true)">${t('restartKeep')}</button>
-    <button class="btn btn-danger" onclick="_doRestart(${ac.id},false)">${t('restartClear')}</button>
-    <button class="btn" style="background:#f0f0f0;color:#666" onclick="document.getElementById('confirm-modal').classList.remove('show')">${t('no')}</button>`;
-  modal.classList.add('show');
+function restartChallenge() {
+  confirmAction(
+    currentLang === 'zh'
+      ? '重新开始挑战'
+      : 'Restart Challenge',
+
+    currentLang === 'zh'
+      ? '确定要重新开始吗？当前记录将被清空。'
+      : 'Are you sure you want to restart? Current records will be cleared.',
+
+    () => {
+      const active = globalState.challenges.find(c => c.active);
+
+      if (!active) return;
+
+      active.days = [];
+      active.saved = 0;
+      active.completedDays = 0;
+      active.startDate = new Date().toISOString();
+
+      saveAll();
+      renderChallengePage();
+
+      koinReact('challengeRestarted');
+    }
+  );
+}
 }
 function _doRestart(id,keep){
   document.getElementById('confirm-modal').classList.remove('show');
