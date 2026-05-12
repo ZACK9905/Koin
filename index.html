@@ -766,7 +766,6 @@ function restartChallenge() {
     }
   );
 }
-}
 function _doRestart(id,keep){
   document.getElementById('confirm-modal').classList.remove('show');
   const ch=globalState.challenges.find(c=>c.id===id);if(!ch)return;
