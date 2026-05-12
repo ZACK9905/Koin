@@ -49,17 +49,12 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
 .challenge-day.missed{background:linear-gradient(135deg,#FFF5F5 0%,#FFE8E8 100%);border-color:#FF9999;opacity:.8}
 .day-number{font-size:18px;font-weight:700;color:#FF9F43;min-width:40px;text-align:center}
 .challenge-day.completed .day-number{color:#78C850}
-.day-info{flex:1}
-.day-info input{width:100%;margin:0}
+.day-info{flex:1}.day-info input{width:100%;margin:0}
 .day-status{font-size:12px;font-weight:600;color:#666}
-.day-status.complete{color:#78C850}
-.day-status.missed{color:#FF6B6B}
+.day-status.complete{color:#78C850}.day-status.missed{color:#FF6B6B}
 .empty-state{text-align:center;padding:40px;color:#999}
 .lang-btn{padding:6px 12px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.2);color:white;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .3s}
-.lang-btn:hover{background:rgba(255,255,255,.3)}
-.lang-btn.active{background:rgba(255,255,255,.8);color:#FF9F43}
-
-/* Month selector */
+.lang-btn:hover{background:rgba(255,255,255,.3)}.lang-btn.active{background:rgba(255,255,255,.8);color:#FF9F43}
 .month-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;background:white;border-radius:12px;padding:12px 16px;border:1px solid #F5E6D3;flex-wrap:wrap}
 .month-bar select{width:auto;margin:0;font-size:13px;padding:6px 10px;border-radius:8px;border:2px solid #FF9F43;color:#FF9F43;font-weight:600}
 .month-badge{font-size:12px;padding:4px 10px;border-radius:20px;font-weight:600}
@@ -67,59 +62,97 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
 .badge-past{background:#f0f0f0;color:#999;border:1px solid #ddd}
 .new-month-btn{padding:8px 14px;background:linear-gradient(135deg,#78C850,#4CAF50);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap}
 .new-month-btn:hover{transform:translateY(-1px)}
-
-/* Challenge history */
 .chal-history-card{background:linear-gradient(135deg,#FFF9F0,#FFE8CC);border:2px solid #FF9F43;border-radius:12px;padding:16px;margin-bottom:12px}
 .chal-history-card.completed-chal{background:linear-gradient(135deg,#F0FFF0,#E8F5E9);border-color:#78C850}
-.chal-history-card.active-chal{border-color:#7C6FF7;background:linear-gradient(135deg,#F5F3FF,#EDE9FF)}
-
-/* 50/30/20 trend */
 .trend-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .trend-month-lbl{font-size:12px;color:#666;min-width:60px}
 .trend-bar-row{flex:1;height:20px;border-radius:6px;overflow:hidden;display:flex}
 .trend-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:700;transition:width .4s}
 .month-summary-card{background:white;border:1px solid #F5E6D3;border-radius:12px;padding:16px;margin-bottom:12px}
 .month-summary-card.current-month{border:2px solid #FF9F43}
-
-/* Koin styles */
 .koin-tip{display:flex;align-items:flex-start;gap:12px;background:#FFFBF5;border:2px solid #FFD699;border-radius:14px;padding:14px 16px;margin-bottom:20px}
 .koin-tip-bubble{flex:1;font-size:14px;color:#444;line-height:1.6}
 .koin-tip-bubble strong{color:#FF9F43;font-weight:700}
 .koin-bounce{animation:koinBounce 2s ease-in-out infinite}
 @keyframes koinBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-#koin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;padding:20px}
+
+/* ── Spotlight ── */
+#koin-spotlight-overlay{display:none;position:fixed;inset:0;z-index:9990;pointer-events:none}
+#koin-spotlight-overlay.show{display:block}
+#koin-spotlight-hole{display:none;position:fixed;border-radius:12px;z-index:9991;pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.52),0 0 0 3px #FF9F43,0 0 24px 4px rgba(255,159,67,.55)}
+#koin-spotlight-hole.show{display:block}
+#koin-spotlight-hole::after{content:'';position:absolute;inset:-6px;border-radius:14px;border:3px solid rgba(255,159,67,.45);animation:spotPulse 1.6s ease-in-out infinite}
+@keyframes spotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.04)}}
+
+/* ── Arrow pointer ── */
+#koin-arrow{position:fixed;z-index:9995;pointer-events:none;display:none;flex-direction:column;align-items:center;gap:4px}
+#koin-arrow.show{display:flex}
+#koin-arrow-label{background:#FF9F43;color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;white-space:nowrap;box-shadow:0 2px 10px rgba(255,159,67,.45)}
+#koin-arrow svg{animation:arrowBounce .7s ease-in-out infinite alternate}
+@keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(7px)}}
+
+/* ── Full modal (explain mode) ── */
+#koin-overlay{display:none;position:fixed;inset:0;z-index:9999;align-items:flex-end;justify-content:center;padding:0 16px 28px;pointer-events:none}
 #koin-overlay.show{display:flex}
-.koin-modal{background:white;border-radius:20px;padding:28px 24px 24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;position:relative}
-.koin-modal-title{font-size:18px;font-weight:700;color:#333;margin:14px 0 8px}
-.koin-modal-text{font-size:15px;color:#555;line-height:1.7;margin-bottom:20px;min-height:72px}
+.koin-modal{background:white;border-radius:20px;padding:24px 22px 20px;max-width:480px;width:100%;
+  box-shadow:0 -4px 40px rgba(0,0,0,.18);text-align:center;pointer-events:all;
+  animation:slideUp .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+.koin-modal-title{font-size:17px;font-weight:700;color:#333;margin:10px 0 7px}
+.koin-modal-text{font-size:14px;color:#555;line-height:1.75;margin-bottom:16px;min-height:56px}
 .koin-modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .koin-modal-btn{padding:10px 22px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
 .koin-modal-btn.primary{background:linear-gradient(135deg,#FF9F43,#EE5A6F);color:white}
 .koin-modal-btn.primary:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,159,67,.4)}
 .koin-modal-btn.secondary{background:#f5f5f5;color:#666}
-.koin-modal-btn.danger{background:#FF6B6B;color:white}
-.koin-dots{display:flex;gap:7px;justify-content:center;margin-bottom:18px}
+.koin-dots{display:flex;gap:7px;justify-content:center;margin-bottom:12px}
 .koin-dot{width:9px;height:9px;border-radius:50%;background:#E8D7C3;transition:all .3s}
-.koin-dot.done{background:#78C850}
-.koin-dot.active{background:#FF9F43;transform:scale(1.35)}
-.koin-step-label{font-size:12px;color:#aaa;margin-bottom:6px}
+.koin-dot.done{background:#78C850}.koin-dot.active{background:#FF9F43;transform:scale(1.35)}
+.koin-step-label{font-size:11px;color:#bbb;margin-bottom:3px;letter-spacing:.5px}
+
+/* ── Mini bar (wait mode) ── */
+#koin-minibar{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;
+  background:white;border-radius:50px;padding:10px 20px 10px 14px;
+  box-shadow:0 4px 24px rgba(0,0,0,.18);border:2px solid #FFD699;
+  flex-direction:row;align-items:center;gap:12px;min-width:260px;max-width:90vw;
+  animation:miniSlideUp .3s ease}
+#koin-minibar.show{display:flex}
+@keyframes miniSlideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+#koin-minibar-text{font-size:13px;color:#444;font-weight:500;flex:1;line-height:1.4}
+#koin-minibar-btn{background:linear-gradient(135deg,#FF9F43,#EE5A6F);color:white;border:none;border-radius:24px;
+  padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+#koin-minibar-btn:hover{transform:scale(1.04)}
+
+/* FAB */
 #koin-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;background:white;box-shadow:0 4px 16px rgba(255,159,67,.45);z-index:1000;padding:4px;transition:transform .2s}
 #koin-fab:hover{transform:scale(1.1)}
 #koin-fab-badge{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:#EE5A6F;border-radius:50%;font-size:11px;color:white;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid white}
 
-/* confirm modal */
+/* confirm */
 #confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:center;justify-content:center;padding:20px}
 #confirm-modal.show{display:flex}
 .confirm-box{background:white;border-radius:16px;padding:24px;max-width:360px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25)}
 .confirm-box h3{font-size:18px;font-weight:700;margin-bottom:10px}
 .confirm-box p{font-size:14px;color:#666;margin-bottom:20px;line-height:1.6}
-.confirm-btns{display:flex;gap:10px;justify-content:center}
+.confirm-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- Koin Onboarding Overlay -->
+<!-- Spotlight -->
+<div id="koin-spotlight-overlay"></div>
+<div id="koin-spotlight-hole"></div>
+<!-- Arrow -->
+<div id="koin-arrow">
+  <div id="koin-arrow-label"></div>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M12 4 L12 18 M6 12 L12 18 L18 12" stroke="#FF9F43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
+
+<!-- Full onboarding modal -->
 <div id="koin-overlay">
   <div class="koin-modal">
     <div id="koin-anim" style="display:flex;justify-content:center;"></div>
@@ -131,12 +164,18 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   </div>
 </div>
 
+<!-- Mini bar (wait mode) -->
+<div id="koin-minibar">
+  <svg width="36" height="36" viewBox="0 0 56 56" style="flex-shrink:0"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>
+  <div id="koin-minibar-text"></div>
+  <button id="koin-minibar-btn"></button>
+</div>
+
 <!-- Confirm Modal -->
 <div id="confirm-modal">
   <div class="confirm-box">
     <div style="font-size:40px;margin-bottom:8px" id="confirm-icon">⚠️</div>
-    <h3 id="confirm-title"></h3>
-    <p id="confirm-msg"></p>
+    <h3 id="confirm-title"></h3><p id="confirm-msg"></p>
     <div class="confirm-btns">
       <button class="btn btn-danger" id="confirm-yes"></button>
       <button class="btn" style="background:#f0f0f0;color:#666" id="confirm-no"></button>
@@ -145,17 +184,14 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
 </div>
 
 <!-- Koin FAB -->
-<button id="koin-fab" onclick="koinShowStep(0)" title="Koin Guide">
+<button id="koin-fab" onclick="koinRestartGuide()" title="Koin Guide">
   <svg width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="22" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="34" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/><ellipse cx="28" cy="10" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,10)"/></svg>
   <div id="koin-fab-badge">?</div>
 </button>
 
 <div class="header">
   <div style="display:flex;justify-content:space-between;align-items:start;">
-    <div>
-      <h1 id="header-title">💰 Koin Family Finance</h1>
-      <p id="header-desc">帮助家庭和孩子学会理财，30天存钱挑战开始！</p>
-    </div>
+    <div><h1 id="header-title">💰 Koin Family Finance</h1><p id="header-desc">帮助家庭和孩子学会理财，30天存钱挑战开始！</p></div>
     <div style="display:flex;gap:8px;">
       <button class="lang-btn active" onclick="switchLang('zh',event)">中文</button>
       <button class="lang-btn" onclick="switchLang('en',event)">English</button>
@@ -163,7 +199,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   </div>
 </div>
 
-<div class="nav">
+<div class="nav" id="main-nav">
   <button class="nav-btn active" onclick="showPage('dashboard',this)">📊 仪表板</button>
   <button class="nav-btn" onclick="showPage('expenses',this)">💸 支出记录</button>
   <button class="nav-btn" onclick="showPage('budget',this)">📈 预算管理</button>
@@ -173,7 +209,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   <button class="nav-btn" onclick="showPage('settings',this)">⚙️ 设置</button>
 </div>
 
-<!-- ═══ DASHBOARD ═══ -->
+<!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
   <div class="koin-tip"><svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/></svg><div class="koin-tip-bubble" id="koin-tip-dashboard"></div></div>
   <div class="month-bar" id="dash-month-bar"></div>
@@ -187,7 +223,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   <div class="card"><div class="section-title" id="lbl-tip">💡 温馨提示</div><div id="dash-tip" style="padding:12px;background:#FFF9F0;border-left:4px solid #FF9F43;color:#333;border-radius:6px;"></div></div>
 </div>
 
-<!-- ═══ EXPENSES ═══ -->
+<!-- EXPENSES -->
 <div id="page-expenses" class="page">
   <div class="koin-tip"><svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg><div class="koin-tip-bubble" id="koin-tip-expenses"></div></div>
   <div class="month-bar" id="exp-month-bar"></div>
@@ -213,67 +249,49 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   <div class="card"><div class="section-title" id="lbl-recentExpense">最近支出</div><div id="expenses-list"></div></div>
 </div>
 
-<!-- ═══ BUDGET ═══ -->
+<!-- BUDGET -->
 <div id="page-budget" class="page">
   <div class="koin-tip"><svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg><div class="koin-tip-bubble" id="koin-tip-budget"></div></div>
   <div class="month-bar" id="budget-month-bar"></div>
-  <div class="card"><div class="section-title" id="lbl-incomeSettings">💰 月收入设置</div><div style="display:flex;gap:10px;"><input type="number" id="income-input" placeholder="输入月收入" min="0" style="flex:1;"><button class="btn btn-primary" onclick="saveIncome()" id="btn-save">保存</button></div></div>
+  <div class="card" id="income-card"><div class="section-title" id="lbl-incomeSettings">💰 月收入设置</div><div style="display:flex;gap:10px;"><input type="number" id="income-input" placeholder="输入月收入" min="0" style="flex:1;"><button class="btn btn-primary" onclick="saveIncome()" id="btn-save">保存</button></div></div>
   <div class="card"><div class="section-title" id="lbl-budgetPerCategory">📊 各类别预算</div><div id="budget-rows"></div></div>
 </div>
 
-<!-- ═══ 50/30/20 ═══ -->
+<!-- 50/30/20 -->
 <div id="page-rule503020" class="page">
   <div style="background:linear-gradient(135deg,#FF9F43 0%,#EE5A6F 50%,#78C850 100%);border-radius:14px;padding:20px;margin-bottom:20px;color:white;">
     <div style="font-size:18px;font-weight:700;margin-bottom:6px;" id="r-title">⚖️ 50/30/20 预算法则</div>
     <div style="font-size:13px;opacity:.92;" id="r-desc">根据你的月收入，自动把钱分成三个桶：必要支出、想要支出、储蓄。</div>
   </div>
-  <!-- month tabs for 503020 -->
-  <div class="card" style="padding:14px 16px;margin-bottom:16px;">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-size:13px;font-weight:600;color:#666;" id="r-view-label">查看月份：</span>
-      <select id="r-month-select" onchange="renderRule503020()" style="width:auto;margin:0;font-size:13px;padding:6px 10px;"></select>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px;">
+  <div class="card" style="padding:14px 16px;margin-bottom:16px;"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="font-size:13px;font-weight:600;color:#666;" id="r-view-label">查看月份：</span><select id="r-month-select" onchange="renderRule503020()" style="width:auto;margin:0;font-size:13px;padding:6px 10px;"></select></div></div>
+  <div id="rule-buckets" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px;">
     <div style="background:white;border-radius:14px;padding:18px;border:2px solid #FF9F43;box-shadow:0 2px 8px rgba(0,0,0,.08);">
-      <div style="font-size:28px;font-weight:800;color:#FF9F43;">50%</div>
-      <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-needs-title">🏠 需求 Needs</div>
+      <div style="font-size:28px;font-weight:800;color:#FF9F43;">50%</div><div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-needs-title">🏠 需求 Needs</div>
       <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-needs-desc">房租、食物、交通等生活必需品</div>
-      <div style="font-size:13px;color:#666;" id="r-needs-label">建议上限</div>
-      <div style="font-size:22px;font-weight:700;color:#FF9F43;" id="r-needs-budget">—</div>
-      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-needs-actual-label">实际花费</div>
-      <div style="font-size:18px;font-weight:600;" id="r-needs-actual">—</div>
-      <div class="progress-bar"><div class="progress-fill" id="r-needs-bar" style="width:0%;background:linear-gradient(90deg,#FF9F43,#EE5A6F);"></div></div>
-      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-needs-status"></div>
-      <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-needs-cats">🏠 房屋 · 🍽️ 食物 · 🚗 交通</div>
+      <div style="font-size:13px;color:#666;" id="r-needs-label">建议上限</div><div style="font-size:22px;font-weight:700;color:#FF9F43;" id="r-needs-budget">—</div>
+      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-needs-actual-label">实际花费</div><div style="font-size:18px;font-weight:600;" id="r-needs-actual">—</div>
+      <div class="progress-bar"><div class="progress-fill" id="r-needs-bar" style="width:0%;"></div></div>
+      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-needs-status"></div><div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-needs-cats">🏠 房屋 · 🍽️ 食物 · 🚗 交通</div>
     </div>
     <div style="background:white;border-radius:14px;padding:18px;border:2px solid #7C6FF7;box-shadow:0 2px 8px rgba(0,0,0,.08);">
-      <div style="font-size:28px;font-weight:800;color:#7C6FF7;">30%</div>
-      <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-wants-title">🎮 想要 Wants</div>
+      <div style="font-size:28px;font-weight:800;color:#7C6FF7;">30%</div><div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-wants-title">🎮 想要 Wants</div>
       <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-wants-desc">娱乐、购物等可选消费</div>
-      <div style="font-size:13px;color:#666;" id="r-wants-label">建议上限</div>
-      <div style="font-size:22px;font-weight:700;color:#7C6FF7;" id="r-wants-budget">—</div>
-      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-wants-actual-label">实际花费</div>
-      <div style="font-size:18px;font-weight:600;" id="r-wants-actual">—</div>
+      <div style="font-size:13px;color:#666;" id="r-wants-label">建议上限</div><div style="font-size:22px;font-weight:700;color:#7C6FF7;" id="r-wants-budget">—</div>
+      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-wants-actual-label">实际花费</div><div style="font-size:18px;font-weight:600;" id="r-wants-actual">—</div>
       <div class="progress-bar"><div class="progress-fill" id="r-wants-bar" style="width:0%;background:linear-gradient(90deg,#7C6FF7,#9B89FF);"></div></div>
-      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-wants-status"></div>
-      <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-wants-cats">🎮 娱乐 · 🛒 购物</div>
+      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-wants-status"></div><div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-wants-cats">🎮 娱乐 · 🛒 购物</div>
     </div>
     <div style="background:white;border-radius:14px;padding:18px;border:2px solid #78C850;box-shadow:0 2px 8px rgba(0,0,0,.08);">
-      <div style="font-size:28px;font-weight:800;color:#78C850;">20%</div>
-      <div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-save-title">💰 储蓄 Savings</div>
+      <div style="font-size:28px;font-weight:800;color:#78C850;">20%</div><div style="font-weight:700;font-size:15px;margin:4px 0;" id="r-save-title">💰 储蓄 Savings</div>
       <div style="font-size:12px;color:#888;margin-bottom:12px;" id="r-save-desc">存款、投资、紧急备用金</div>
-      <div style="font-size:13px;color:#666;" id="r-save-label">建议金额</div>
-      <div style="font-size:22px;font-weight:700;color:#78C850;" id="r-save-budget">—</div>
-      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-save-actual-label">实际结余</div>
-      <div style="font-size:18px;font-weight:600;" id="r-save-actual">—</div>
+      <div style="font-size:13px;color:#666;" id="r-save-label">建议金额</div><div style="font-size:22px;font-weight:700;color:#78C850;" id="r-save-budget">—</div>
+      <div style="font-size:13px;color:#666;margin-top:8px;" id="r-save-actual-label">实际结余</div><div style="font-size:18px;font-weight:600;" id="r-save-actual">—</div>
       <div class="progress-bar"><div class="progress-fill" id="r-save-bar" style="width:0%;background:linear-gradient(90deg,#78C850,#4CAF50);"></div></div>
-      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-save-status"></div>
-      <div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-save-cats">💰 收入 − 总支出</div>
+      <div style="font-size:12px;font-weight:600;margin-top:4px;" id="r-save-status"></div><div style="font-size:11px;color:#aaa;margin-top:6px;" id="r-save-cats">💰 收入 − 总支出</div>
     </div>
   </div>
   <div class="card"><div class="section-title" id="r-breakdown-title">📊 实际分配比例</div>
-    <div style="height:36px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:10px;" id="r-split-bar">
+    <div style="height:36px;border-radius:10px;overflow:hidden;display:flex;margin-bottom:10px;">
       <div id="r-split-needs" style="background:#FF9F43;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
       <div id="r-split-wants" style="background:#7C6FF7;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
       <div id="r-split-save" style="background:#78C850;height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;"></div>
@@ -284,18 +302,15 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
       <span><span style="display:inline-block;width:12px;height:12px;background:#78C850;border-radius:3px;margin-right:4px;"></span><span id="r-leg-save">储蓄</span></span>
     </div>
   </div>
-  <!-- Monthly summaries -->
   <div class="card"><div class="section-title" id="r-history-title">📋 每月总结卡片</div><div id="r-month-summaries"></div></div>
-  <!-- Trend chart -->
   <div class="card"><div class="section-title" id="r-trend-title">📈 历史趋势对比</div><div id="r-trend-chart"></div></div>
   <div class="card" id="r-advice-card"><div class="section-title" id="r-advice-title">💡 个人化建议</div><div id="r-advice-content" style="font-size:14px;line-height:1.7;color:#444;"></div></div>
   <div class="card" id="r-no-income-card" style="display:none;text-align:center;padding:40px;"><div style="font-size:40px;margin-bottom:12px;">💸</div><div style="font-weight:600;color:#666;" id="r-no-income-msg">请先设置月收入</div></div>
 </div>
 
-<!-- ═══ CHALLENGE ═══ -->
+<!-- CHALLENGE -->
 <div id="page-challenge" class="page">
   <div class="koin-tip"><svg class="koin-bounce" width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg><div class="koin-tip-bubble" id="koin-tip-challenge"></div></div>
-  <!-- New challenge form -->
   <div class="card" id="chal-new-card">
     <div class="section-title" id="lbl-createNewChallenge">🎯 开始新挑战</div>
     <div class="form-grid">
@@ -304,7 +319,6 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
     </div>
     <button class="btn btn-primary" onclick="startChallenge()" id="btn-startChallenge">开始挑战</button>
   </div>
-  <!-- Active challenge -->
   <div class="card" id="challenge-active-card" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:8px;">
       <div class="section-title" style="margin:0" id="lbl-challengeInfo">📊 挑战进度</div>
@@ -330,14 +344,10 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
     <div class="section-title" id="lbl-challengeLog">挑战日志</div>
     <div id="challenge-days" style="max-height:400px;overflow-y:auto;"></div>
   </div>
-  <!-- Challenge history -->
-  <div class="card">
-    <div class="section-title" id="lbl-chalHistory">📚 挑战历史记录</div>
-    <div id="challenge-history-list"></div>
-  </div>
+  <div class="card"><div class="section-title" id="lbl-chalHistory">📚 挑战历史记录</div><div id="challenge-history-list"></div></div>
 </div>
 
-<!-- ═══ REPORTS ═══ -->
+<!-- REPORTS -->
 <div id="page-reports" class="page">
   <div class="month-bar" id="rep-month-bar"></div>
   <div class="metric-grid">
@@ -348,7 +358,7 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   <div class="card"><div class="section-title" id="lbl-expenseDistribution">支出分布</div><div id="reports-content"></div></div>
 </div>
 
-<!-- ═══ SETTINGS ═══ -->
+<!-- SETTINGS -->
 <div id="page-settings" class="page">
   <div class="card">
     <div class="section-title" id="lbl-familyInfo">👨‍👩‍👧‍👦 家庭信息</div>
@@ -356,12 +366,9 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
       <div><label id="lbl-familyName">家庭名称</label><input type="text" id="settings-name" placeholder="例：王家"></div>
       <div><label id="lbl-currency">货币符号</label>
         <select id="settings-currency">
-          <option value="RM">RM 马来西亚林吉特</option>
-          <option value="¥">¥ 人民币</option>
-          <option value="S$">S$ 新加坡元</option>
-          <option value="HK$">HK$ 港币</option>
-          <option value="NT$">NT$ 新台币</option>
-          <option value="$">$ 美元</option>
+          <option value="RM">RM 马来西亚林吉特</option><option value="¥">¥ 人民币</option>
+          <option value="S$">S$ 新加坡元</option><option value="HK$">HK$ 港币</option>
+          <option value="NT$">NT$ 新台币</option><option value="$">$ 美元</option>
         </select>
       </div>
     </div>
@@ -369,22 +376,19 @@ input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:fo
   </div>
   <div class="card">
     <div class="section-title">📅 月份管理</div>
-    <p style="font-size:14px;color:#666;margin-bottom:12px;" id="lbl-monthMgmt">每个月的数据独立保存。新的一个月开始时，点击下面的按钮创建新月份。</p>
+    <p style="font-size:14px;color:#666;margin-bottom:12px;" id="lbl-monthMgmt">每个月的数据独立保存。</p>
     <button class="btn btn-success" onclick="createNewMonth(true)" id="btn-newMonth" style="width:100%;margin-bottom:10px;">➕ 开始新的一个月</button>
     <div id="all-months-list" style="margin-top:12px;"></div>
   </div>
   <div class="card">
     <div class="section-title" id="lbl-dataManagement">🗑️ 数据管理</div>
-    <button class="btn btn-danger" style="width:100%;" onclick="confirmAction(currentLang==='zh'?'清空所有数据':'Clear All Data',currentLang==='zh'?'这将删除所有月份的所有数据，无法恢复！':'This will delete ALL data from ALL months. This cannot be undone!',()=>{localStorage.clear();location.reload();})">🗑️ <span id="btn-clearData">清空所有数据</span></button>
+    <button class="btn btn-danger" style="width:100%;" onclick="confirmAction(currentLang==='zh'?'清空所有数据':'Clear All Data',currentLang==='zh'?'这将删除所有月份的所有数据，无法恢复！':'This will delete ALL data. Cannot be undone!',()=>{localStorage.clear();location.reload();})">🗑️ <span id="btn-clearData">清空所有数据</span></button>
   </div>
 </div>
 
-</div><!-- end .app -->
-
+</div><!-- .app -->
 <script>
-// ═══════════════════════════════════════════════════════
-// i18n
-// ═══════════════════════════════════════════════════════
+// ══ i18n ══════════════════════════════════════════════
 const i18n={
 zh:{
   headerTitle:'💰 Koin Family Finance',headerDesc:'帮助家庭和孩子学会理财，30天存钱挑战开始！',
@@ -428,8 +432,8 @@ zh:{
   confirmRestart:'确定要重新开始30天挑战吗？',
   restartKeep:'保留记录，重新来过',restartClear:'清空记录，全新开始',
   confirmEndChallenge:'确定要结束并归档这个挑战吗？',
-  challengeComplete:'🎉 挑战完成！',restart:'🔄 重新开始',endChallenge:'⏹ 结束并归档',
-  chalActive:'进行中',chalDone:'已完成',chalArchived:'已归档',
+  restart:'🔄 重新开始',endChallenge:'⏹ 结束并归档',
+  chalDone:'已完成',chalArchived:'已归档',
   income:'收入',totalSpent:'总支出',savedMoney:'存下来',rate:'储蓄率',
   yes:'确定',no:'取消',
 },
@@ -470,13 +474,13 @@ en:{
   r_advice_wants_over:'🛍️ Wants spending is high. Try the 30-day rule: wait 30 days before buying non-essentials!',
   r_advice_save_low:'💰 Savings rate is below 20%. Try paying yourself first — transfer 20% to savings immediately!',
   currentMonth:'Current Month',pastMonth:'Past Month',newMonthBtn:'➕ New Month',
-  monthMgmt:'Each month\'s data is saved separately. When a new month starts, click below to create it.',
-  confirmNewMonth:'Start a new month? Current month data is saved and can be reviewed anytime.',
+  monthMgmt:"Each month's data is saved separately.",
+  confirmNewMonth:'Start a new month? Current data is saved and reviewable anytime.',
   confirmRestart:'Restart the 30-day challenge?',
   restartKeep:'Keep records, restart',restartClear:'Clear all, fresh start',
   confirmEndChallenge:'End and archive this challenge?',
-  challengeComplete:'🎉 Challenge Complete!',restart:'🔄 Restart',endChallenge:'⏹ End & Archive',
-  chalActive:'Active',chalDone:'Complete',chalArchived:'Archived',
+  restart:'🔄 Restart',endChallenge:'⏹ End & Archive',
+  chalDone:'Complete',chalArchived:'Archived',
   income:'Income',totalSpent:'Total Spent',savedMoney:'Saved',rate:'Savings Rate',
   yes:'Confirm',no:'Cancel',
 }};
@@ -484,32 +488,23 @@ en:{
 let currentLang='zh';
 function t(k){return(i18n[currentLang]&&i18n[currentLang][k])||i18n.zh[k]||k}
 
-// ═══════════════════════════════════════════════════════
-// STATE — multi-month architecture
-// ═══════════════════════════════════════════════════════
-// globalState: { familyName, currency, challenges:[], currentMonthKey }
-// monthState[YYYY-MM]: { income, budgets:{}, expenses:[] }
-
+// ══ STATE ═════════════════════════════════════════════
 let globalState={familyName:'My Family',currency:'RM',challenges:[],currentMonthKey:''};
-let monthData={}; // keyed by "YYYY-MM"
-let viewingMonth=''; // which month the user is browsing (default = current)
+let monthData={};
+let viewingMonth='';
 
 function todayMonthKey(){return new Date().toISOString().slice(0,7)}
 function monthLabel(key){
   const [y,m]=key.split('-');
   const months={zh:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-                en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']};
-  return `${months[currentLang][parseInt(m)-1]} ${y}`;
+    en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']};
+  return`${months[currentLang][parseInt(m)-1]} ${y}`;
 }
-
 function getMonth(key){
-  if(!monthData[key]) monthData[key]={income:0,budgets:{housing:0,food:0,transport:0,education:0,entertainment:0,shopping:0,other:0},expenses:[]};
+  if(!monthData[key])monthData[key]={income:0,budgets:{housing:0,food:0,transport:0,education:0,entertainment:0,shopping:0,other:0},expenses:[]};
   return monthData[key];
 }
-
-function saveAll(){
-  try{localStorage.setItem('koinGlobal',JSON.stringify(globalState));localStorage.setItem('koinMonths',JSON.stringify(monthData));}catch(e){}
-}
+function saveAll(){try{localStorage.setItem('koinGlobal',JSON.stringify(globalState));localStorage.setItem('koinMonths',JSON.stringify(monthData));}catch(e){}}
 function loadAll(){
   try{
     const g=localStorage.getItem('koinGlobal');if(g)globalState=Object.assign(globalState,JSON.parse(g));
@@ -517,40 +512,23 @@ function loadAll(){
   }catch(e){}
   const cur=todayMonthKey();
   if(!globalState.currentMonthKey)globalState.currentMonthKey=cur;
-  getMonth(globalState.currentMonthKey);
-  viewingMonth=globalState.currentMonthKey;
+  getMonth(globalState.currentMonthKey);viewingMonth=globalState.currentMonthKey;
 }
-
 function fmt(n){const c=globalState.currency||'RM';return c+' '+Math.abs(parseFloat(n)||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2})}
 
-// ═══════════════════════════════════════════════════════
-// Month management
-// ═══════════════════════════════════════════════════════
+// ══ Month management ══════════════════════════════════
 function createNewMonth(confirm_){
-  if(confirm_){
-    confirmAction(t('newMonthBtn'),t('confirmNewMonth'),()=>_doCreateNewMonth());
-    return;
-  }
+  if(confirm_){confirmAction(t('newMonthBtn'),t('confirmNewMonth'),()=>_doCreateNewMonth());return;}
   _doCreateNewMonth();
 }
 function _doCreateNewMonth(){
-  const key=todayMonthKey();
-  globalState.currentMonthKey=key;
-  getMonth(key);
-  viewingMonth=key;
-  saveAll();
-  renderAllMonthBars();
-  renderDashboard();
-  renderSettings();
-  koinReact('incomeSet');
+  const key=todayMonthKey();globalState.currentMonthKey=key;getMonth(key);viewingMonth=key;saveAll();
+  renderAllMonthBars();renderDashboard();renderSettings();koinReact('incomeSet');
 }
-
 function allMonthKeys(){return Object.keys(monthData).sort().reverse()}
-
 function renderMonthBar(barId,onchange){
   const bar=document.getElementById(barId);if(!bar)return;
-  const keys=allMonthKeys();
-  const isCurrent=viewingMonth===globalState.currentMonthKey;
+  const keys=allMonthKeys();const isCurrent=viewingMonth===globalState.currentMonthKey;
   bar.innerHTML=`
     <span style="font-size:13px;font-weight:600;color:#666;">${currentLang==='zh'?'月份：':'Month:'}</span>
     <select style="width:auto;margin:0;font-size:13px;padding:6px 10px;border-radius:8px;border:2px solid #FF9F43;color:#FF9F43;font-weight:600;"
@@ -558,24 +536,22 @@ function renderMonthBar(barId,onchange){
       ${keys.map(k=>`<option value="${k}" ${k===viewingMonth?'selected':''}>${monthLabel(k)}${k===globalState.currentMonthKey?' ★':''}</option>`).join('')}
     </select>
     <span class="month-badge ${isCurrent?'badge-current':'badge-past'}">${isCurrent?t('currentMonth'):t('pastMonth')}</span>
-    ${viewingMonth===globalState.currentMonthKey?`<button class="new-month-btn" onclick="createNewMonth(true)">${t('newMonthBtn')}</button>`:''}
-  `;
+    ${viewingMonth===globalState.currentMonthKey?`<button class="new-month-btn" onclick="createNewMonth(true)">${t('newMonthBtn')}</button>`:''}`;
 }
 function renderAllMonthBars(){
   renderMonthBar('dash-month-bar','renderDashboard()');
-  renderMonthBar('exp-month-bar','renderExpenses();if(viewingMonth===globalState.currentMonthKey){document.getElementById("exp-add-card").style.display="block"}else{document.getElementById("exp-add-card").style.display="none"}');
+  renderMonthBar('exp-month-bar','renderExpenses();document.getElementById("exp-add-card").style.display=viewingMonth===globalState.currentMonthKey?"block":"none"');
   renderMonthBar('budget-month-bar','renderBudget()');
   renderMonthBar('rep-month-bar','renderReports()');
 }
 
-// ═══════════════════════════════════════════════════════
-// Navigation
-// ═══════════════════════════════════════════════════════
+// ══ Navigation ════════════════════════════════════════
 function showPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const navNames=['dashboard','expenses','budget','rule503020','challenge','reports','settings'];document.querySelectorAll('.nav-btn').forEach((b,i)=>{if(navNames[i]===name)b.classList.add('active')})}
   if(name==='dashboard'){renderDashboard();koinUpdatePageTip('dashboard')}
   else if(name==='expenses'){renderExpenses();koinUpdatePageTip('expenses')}
   else if(name==='budget'){renderBudget();koinUpdatePageTip('budget')}
@@ -585,9 +561,7 @@ function showPage(name,btn){
   else if(name==='settings')renderSettings();
 }
 
-// ═══════════════════════════════════════════════════════
-// Expenses
-// ═══════════════════════════════════════════════════════
+// ══ Expenses ══════════════════════════════════════════
 function addExpense(){
   if(viewingMonth!==globalState.currentMonthKey)return;
   const cat=document.getElementById('exp-cat').value;
@@ -596,16 +570,10 @@ function addExpense(){
   const date=document.getElementById('exp-date').value||new Date().toISOString().split('T')[0];
   if(!amount||amount<=0)return;
   getMonth(viewingMonth).expenses.unshift({id:Date.now(),cat,amount,desc,date});
-  saveAll();
-  document.getElementById('exp-amount').value='';document.getElementById('exp-desc').value='';
+  saveAll();document.getElementById('exp-amount').value='';document.getElementById('exp-desc').value='';
   renderExpenses();renderDashboard();koinReact('expenseAdded');
 }
-
-function deleteExpense(id){
-  getMonth(viewingMonth).expenses=getMonth(viewingMonth).expenses.filter(e=>e.id!==id);
-  saveAll();renderExpenses();renderDashboard();
-}
-
+function deleteExpense(id){getMonth(viewingMonth).expenses=getMonth(viewingMonth).expenses.filter(e=>e.id!==id);saveAll();renderExpenses();renderDashboard();}
 function renderExpenses(){
   const exps=getMonth(viewingMonth).expenses;
   const isCurrentMonth=viewingMonth===globalState.currentMonthKey;
@@ -620,30 +588,18 @@ function renderExpenses(){
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-// Budget
-// ═══════════════════════════════════════════════════════
-function saveIncome(){
-  getMonth(viewingMonth).income=parseFloat(document.getElementById('income-input').value)||0;
-  saveAll();renderDashboard();koinReact('incomeSet');
-}
-
+// ══ Budget ════════════════════════════════════════════
+function saveIncome(){getMonth(viewingMonth).income=parseFloat(document.getElementById('income-input').value)||0;saveAll();renderDashboard();koinReact('incomeSet');}
 function renderBudget(){
-  const md=getMonth(viewingMonth);
-  const isCurrentMonth=viewingMonth===globalState.currentMonthKey;
+  const md=getMonth(viewingMonth);const isCurrentMonth=viewingMonth===globalState.currentMonthKey;
   document.getElementById('income-input').value=md.income||'';
-  document.getElementById('income-input').disabled=!isCurrentMonth;
-  document.getElementById('btn-save').disabled=!isCurrentMonth;
+  document.getElementById('income-input').disabled=!isCurrentMonth;document.getElementById('btn-save').disabled=!isCurrentMonth;
   const cats=['housing','food','transport','education','entertainment','shopping','other'];
   document.getElementById('budget-rows').innerHTML=cats.map(cat=>{
     const spent=md.expenses.filter(e=>e.cat===cat).reduce((a,e)=>a+e.amount,0);
-    const budget=md.budgets[cat]||0;
-    const pct=budget>0?Math.min(100,Math.round(spent/budget*100)):0;
+    const budget=md.budgets[cat]||0;const pct=budget>0?Math.min(100,Math.round(spent/budget*100)):0;
     return`<div style="padding:12px 0;border-bottom:1px solid #E8D7C3;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-weight:600;">${t(cat)}</span>
-        <span style="font-size:13px;color:#666;">${fmt(spent)} / ${fmt(budget)}</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-weight:600;">${t(cat)}</span><span style="font-size:13px;color:#666;">${fmt(spent)} / ${fmt(budget)}</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;${pct>=100?'background:linear-gradient(90deg,#FF6B6B,#EE5A6F);':''}"></div></div>
       <input type="number" placeholder="0" value="${md.budgets[cat]||''}" style="margin-top:6px;" ${!isCurrentMonth?'disabled':''}
         onchange="getMonth('${viewingMonth}').budgets['${cat}']=parseFloat(this.value)||0;saveAll();renderBudget();">
@@ -651,103 +607,54 @@ function renderBudget(){
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-// 50/30/20
-// ═══════════════════════════════════════════════════════
+// ══ 50/30/20 ══════════════════════════════════════════
 function renderRule503020(){
-  // populate month select
-  const sel=document.getElementById('r-month-select');
-  const keys=allMonthKeys();
+  const sel=document.getElementById('r-month-select');const keys=allMonthKeys();
   sel.innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}${k===globalState.currentMonthKey?' ★':''}</option>`).join('');
   sel.value=viewingMonth;
-
-  // static labels
-  const lbls={'r-title':'r_title','r-desc':'r_desc','r-needs-title':'r_needs_title','r-needs-desc':'r_needs_desc',
-    'r-needs-label':'r_needs_label','r-needs-actual-label':'r_needs_actual_label','r-needs-cats':'r_needs_cats',
-    'r-wants-title':'r_wants_title','r-wants-desc':'r_wants_desc','r-wants-label':'r_wants_label',
-    'r-wants-actual-label':'r_wants_actual_label','r-wants-cats':'r_wants_cats',
-    'r-save-title':'r_save_title','r-save-desc':'r_save_desc','r-save-label':'r_save_label',
-    'r-save-actual-label':'r_save_actual_label','r-save-cats':'r_save_cats',
-    'r-breakdown-title':'r_breakdown_title','r-leg-needs':'r_leg_needs','r-leg-wants':'r_leg_wants',
-    'r-leg-save':'r_leg_save','r-advice-title':'r_advice_title','r-history-title':'r_history_title',
-    'r-trend-title':'r_trend_title','r-view-label':'r_view_label','r-no-income-msg':'r_no_income_msg'};
+  const lbls={'r-title':'r_title','r-desc':'r_desc','r-needs-title':'r_needs_title','r-needs-desc':'r_needs_desc','r-needs-label':'r_needs_label','r-needs-actual-label':'r_needs_actual_label','r-needs-cats':'r_needs_cats','r-wants-title':'r_wants_title','r-wants-desc':'r_wants_desc','r-wants-label':'r_wants_label','r-wants-actual-label':'r_wants_actual_label','r-wants-cats':'r_wants_cats','r-save-title':'r_save_title','r-save-desc':'r_save_desc','r-save-label':'r_save_label','r-save-actual-label':'r_save_actual_label','r-save-cats':'r_save_cats','r-breakdown-title':'r_breakdown_title','r-leg-needs':'r_leg_needs','r-leg-wants':'r_leg_wants','r-leg-save':'r_leg_save','r-advice-title':'r_advice_title','r-history-title':'r_history_title','r-trend-title':'r_trend_title','r-view-label':'r_view_label','r-no-income-msg':'r_no_income_msg'};
   Object.entries(lbls).forEach(([id,k])=>{const el=document.getElementById(id);if(el)el.textContent=t(k)});
-
-  const selectedKey=sel.value||viewingMonth;
-  _render503020ForMonth(selectedKey);
-
-  // monthly summary cards
-  _renderMonthlySummaries();
-  // trend chart
-  _renderTrendChart();
+  _render503020ForMonth(sel.value||viewingMonth);_renderMonthlySummaries();_renderTrendChart();
 }
-
 function _render503020ForMonth(key){
-  const md=getMonth(key);
-  const income=md.income;
-  const noCard=document.getElementById('r-no-income-card');
-  const advCard=document.getElementById('r-advice-card');
+  const md=getMonth(key);const income=md.income;
+  const noCard=document.getElementById('r-no-income-card');const advCard=document.getElementById('r-advice-card');
   if(!income||income<=0){noCard.style.display='block';advCard.style.display='none';return}
   noCard.style.display='none';advCard.style.display='block';
-
-  const NEEDS=['housing','food','transport'];
-  const WANTS=['entertainment','shopping'];
-  const NEUTRAL=['education','other'];
+  const NEEDS=['housing','food','transport'];const WANTS=['entertainment','shopping'];const NEUTRAL=['education','other'];
   const needsSpent=md.expenses.filter(e=>NEEDS.includes(e.cat)||NEUTRAL.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
   const wantsSpent=md.expenses.filter(e=>WANTS.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
-  const total=md.expenses.reduce((a,e)=>a+e.amount,0);
-  const actualSave=Math.max(0,income-total);
-
+  const total=md.expenses.reduce((a,e)=>a+e.amount,0);const actualSave=Math.max(0,income-total);
   const nB=income*.5,wB=income*.3,sB=income*.2;
   const nPct=nB>0?Math.min(150,Math.round(needsSpent/nB*100)):0;
   const wPct=wB>0?Math.min(150,Math.round(wantsSpent/wB*100)):0;
   const sPct=sB>0?Math.min(150,Math.round(actualSave/sB*100)):0;
-
   const stTxt=p=>p>100?t('r_status_over'):p<=80?t('r_status_under'):t('r_status_ok');
   const stClr=p=>p>100?'#EE5A6F':p<=80?'#78C850':'#FF9F43';
-
-  document.getElementById('r-needs-budget').textContent=fmt(nB);
-  document.getElementById('r-wants-budget').textContent=fmt(wB);
-  document.getElementById('r-save-budget').textContent=fmt(sB);
-  document.getElementById('r-needs-actual').textContent=fmt(needsSpent);
-  document.getElementById('r-wants-actual').textContent=fmt(wantsSpent);
-  document.getElementById('r-save-actual').textContent=fmt(actualSave);
-
+  document.getElementById('r-needs-budget').textContent=fmt(nB);document.getElementById('r-wants-budget').textContent=fmt(wB);document.getElementById('r-save-budget').textContent=fmt(sB);
+  document.getElementById('r-needs-actual').textContent=fmt(needsSpent);document.getElementById('r-wants-actual').textContent=fmt(wantsSpent);document.getElementById('r-save-actual').textContent=fmt(actualSave);
   const nb=document.getElementById('r-needs-bar');nb.style.width=Math.min(100,nPct)+'%';nb.style.background=nPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#FF9F43,#EE5A6F)';
   const wb=document.getElementById('r-wants-bar');wb.style.width=Math.min(100,wPct)+'%';wb.style.background=wPct>100?'linear-gradient(90deg,#EE5A6F,#FF6B6B)':'linear-gradient(90deg,#7C6FF7,#9B89FF)';
   document.getElementById('r-save-bar').style.width=Math.min(100,sPct)+'%';
-
   const ns=document.getElementById('r-needs-status');ns.textContent=stTxt(nPct);ns.style.color=stClr(nPct);
   const ws=document.getElementById('r-wants-status');ws.textContent=stTxt(wPct);ws.style.color=stClr(wPct);
   const ss=document.getElementById('r-save-status');ss.textContent=stTxt(sPct);ss.style.color=stClr(sPct);
-
-  const nR=income>0?Math.round(needsSpent/income*100):0;
-  const wR=income>0?Math.round(wantsSpent/income*100):0;
-  const sR=income>0?Math.round(actualSave/income*100):0;
-  const tot3=nR+wR+sR||100;
-  const nW=Math.round(nR/tot3*100),wW=Math.round(wR/tot3*100),sW=100-nW-wW;
+  const nR=income>0?Math.round(needsSpent/income*100):0;const wR=income>0?Math.round(wantsSpent/income*100):0;const sR=income>0?Math.round(actualSave/income*100):0;
+  const tot3=nR+wR+sR||100;const nW=Math.round(nR/tot3*100),wW=Math.round(wR/tot3*100),sW=100-nW-wW;
   const sn=document.getElementById('r-split-needs');sn.style.width=nW+'%';sn.textContent=nW>8?nR+'%':'';
   const sw=document.getElementById('r-split-wants');sw.style.width=wW+'%';sw.textContent=wW>8?wR+'%':'';
   const ss2=document.getElementById('r-split-save');ss2.style.width=sW+'%';ss2.textContent=sW>8?sR+'%':'';
-
   const msgs=[];
-  if(nPct>100)msgs.push(t('r_advice_needs_over'));
-  if(wPct>100)msgs.push(t('r_advice_wants_over'));
-  if(sPct<80)msgs.push(t('r_advice_save_low'));
+  if(nPct>100)msgs.push(t('r_advice_needs_over'));if(wPct>100)msgs.push(t('r_advice_wants_over'));if(sPct<80)msgs.push(t('r_advice_save_low'));
   if(!msgs.length)msgs.push(t('r_advice_all_ok'));
   document.getElementById('r-advice-content').innerHTML=msgs.map(m=>`<p style="margin-bottom:10px;">${m}</p>`).join('');
 }
-
 function _renderMonthlySummaries(){
-  const keys=allMonthKeys();
-  const c=document.getElementById('r-month-summaries');
+  const keys=allMonthKeys();const c=document.getElementById('r-month-summaries');
   if(!keys.length){c.innerHTML=`<div class="empty-state">${t('noData')}</div>`;return}
   c.innerHTML=keys.map(k=>{
-    const md=getMonth(k);const income=md.income;
-    const total=md.expenses.reduce((a,e)=>a+e.amount,0);
-    const saved=Math.max(0,income-total);
-    const rate=income>0?Math.round(saved/income*100):0;
-    const isCur=k===globalState.currentMonthKey;
+    const md=getMonth(k);const income=md.income;const total=md.expenses.reduce((a,e)=>a+e.amount,0);
+    const saved=Math.max(0,income-total);const rate=income>0?Math.round(saved/income*100):0;const isCur=k===globalState.currentMonthKey;
     const rateColor=rate>=20?'#78C850':rate>=10?'#FF9F43':'#EE5A6F';
     return`<div class="month-summary-card ${isCur?'current-month':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -762,28 +669,22 @@ function _renderMonthlySummaries(){
     </div>`;
   }).join('');
 }
-
 function _renderTrendChart(){
-  const keys=allMonthKeys().slice(0,6).reverse();
-  const c=document.getElementById('r-trend-chart');
+  const keys=allMonthKeys().slice(0,6).reverse();const c=document.getElementById('r-trend-chart');
   if(!keys.length){c.innerHTML=`<div class="empty-state">${t('noData')}</div>`;return}
   const NEEDS=['housing','food','transport'];const WANTS=['entertainment','shopping'];const NEUTRAL=['education','other'];
   c.innerHTML=keys.map(k=>{
     const md=getMonth(k);const income=md.income||1;
     const n=md.expenses.filter(e=>NEEDS.includes(e.cat)||NEUTRAL.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
     const w=md.expenses.filter(e=>WANTS.includes(e.cat)).reduce((a,e)=>a+e.amount,0);
-    const total=md.expenses.reduce((a,e)=>a+e.amount,0);
-    const s=Math.max(0,income-total);
-    const tot=n+w+s||1;
-    const nW=Math.round(n/tot*100),wW=Math.round(w/tot*100),sW=100-nW-wW;
-    return`<div class="trend-bar-wrap">
-      <div class="trend-month-lbl">${monthLabel(k)}</div>
+    const total=md.expenses.reduce((a,e)=>a+e.amount,0);const s=Math.max(0,income-total);
+    const tot=n+w+s||1;const nW=Math.round(n/tot*100),wW=Math.round(w/tot*100),sW=100-nW-wW;
+    return`<div class="trend-bar-wrap"><div class="trend-month-lbl">${monthLabel(k)}</div>
       <div class="trend-bar-row">
         <div class="trend-seg" style="width:${nW}%;background:#FF9F43;">${nW>8?nW+'%':''}</div>
         <div class="trend-seg" style="width:${wW}%;background:#7C6FF7;">${wW>8?wW+'%':''}</div>
         <div class="trend-seg" style="width:${sW}%;background:#78C850;">${sW>8?sW+'%':''}</div>
-      </div>
-    </div>`;
+      </div></div>`;
   }).join('');
   c.innerHTML+=`<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-top:10px;">
     <span><span style="display:inline-block;width:10px;height:10px;background:#FF9F43;border-radius:2px;margin-right:4px;"></span>${t('r_leg_needs')}</span>
@@ -792,68 +693,41 @@ function _renderTrendChart(){
   </div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-// Challenge — multi-challenge with history
-// ═══════════════════════════════════════════════════════
+// ══ Challenge ═════════════════════════════════════════
 function activeChallenge(){return globalState.challenges.find(c=>c.status==='active')||null}
-
 function startChallenge(){
-  const name=document.getElementById('chal-name').value;
-  const target=parseFloat(document.getElementById('chal-target').value);
+  const name=document.getElementById('chal-name').value;const target=parseFloat(document.getElementById('chal-target').value);
   if(!name||!target||target<=0){alert(currentLang==='zh'?'请填写完整信息':'Please fill in all fields');return}
-  if(activeChallenge()){alert(currentLang==='zh'?'已有进行中的挑战，请先结束或重启':'There is already an active challenge');return}
+  if(activeChallenge()){alert(currentLang==='zh'?'已有进行中的挑战':'There is already an active challenge');return}
   globalState.challenges.push({id:Date.now(),name,target,startDate:new Date().toISOString(),saved:0,status:'active',days:Array(30).fill(null).map(()=>({saved:0,checked:false}))});
   document.getElementById('chal-name').value='';document.getElementById('chal-target').value='';
   saveAll();renderChallengePage();koinReact('challengeStart');
 }
-
-function restartChallenge(){
-  const ac=activeChallenge();if(!ac)return;
-  // show 2-option confirm
-  _showRestartOptions(ac);
-}
-
+function restartChallenge(){const ac=activeChallenge();if(!ac)return;_showRestartOptions(ac)}
 function _showRestartOptions(ac){
   const modal=document.getElementById('confirm-modal');
-  document.getElementById('confirm-icon').textContent='🔄';
-  document.getElementById('confirm-title').textContent=t('confirmRestart');
-  document.getElementById('confirm-msg').textContent='';
-  const btns=document.getElementById('confirm-btns');
-  btns.innerHTML=`
+  document.getElementById('confirm-icon').textContent='🔄';document.getElementById('confirm-title').textContent=t('confirmRestart');document.getElementById('confirm-msg').textContent='';
+  document.getElementById('confirm-btns').innerHTML=`
     <button class="btn btn-warning" onclick="_doRestart(${ac.id},true)">${t('restartKeep')}</button>
     <button class="btn btn-danger" onclick="_doRestart(${ac.id},false)">${t('restartClear')}</button>
     <button class="btn" style="background:#f0f0f0;color:#666" onclick="document.getElementById('confirm-modal').classList.remove('show')">${t('no')}</button>`;
   modal.classList.add('show');
 }
-
 function _doRestart(id,keep){
   document.getElementById('confirm-modal').classList.remove('show');
   const ch=globalState.challenges.find(c=>c.id===id);if(!ch)return;
-  if(keep){
-    // archive current, start fresh with same name/target
-    ch.status='archived';ch.archivedDate=new Date().toISOString();
-    globalState.challenges.push({id:Date.now(),name:ch.name,target:ch.target,startDate:new Date().toISOString(),saved:0,status:'active',days:Array(30).fill(null).map(()=>({saved:0,checked:false}))});
-  } else {
-    ch.saved=0;ch.startDate=new Date().toISOString();ch.days=Array(30).fill(null).map(()=>({saved:0,checked:false}));
-  }
+  if(keep){ch.status='archived';ch.archivedDate=new Date().toISOString();globalState.challenges.push({id:Date.now(),name:ch.name,target:ch.target,startDate:new Date().toISOString(),saved:0,status:'active',days:Array(30).fill(null).map(()=>({saved:0,checked:false}))});}
+  else{ch.saved=0;ch.startDate=new Date().toISOString();ch.days=Array(30).fill(null).map(()=>({saved:0,checked:false}));}
   saveAll();renderChallengePage();koinReact('challengeStart');
 }
-
 function endChallenge(){
   const ac=activeChallenge();if(!ac)return;
-  confirmAction(t('endChallenge'),t('confirmEndChallenge'),()=>{
-    ac.status='archived';ac.archivedDate=new Date().toISOString();
-    saveAll();renderChallengePage();
-  });
+  confirmAction(t('endChallenge'),t('confirmEndChallenge'),()=>{ac.status='archived';ac.archivedDate=new Date().toISOString();saveAll();renderChallengePage();});
 }
-
 function deleteChallenge(id){
   confirmAction(currentLang==='zh'?'删除记录':'Delete Record',currentLang==='zh'?'确定要删除这个挑战记录吗？':'Delete this challenge record permanently?',()=>{
-    globalState.challenges=globalState.challenges.filter(c=>c.id!==id);
-    saveAll();renderChallengePage();
-  });
+    globalState.challenges=globalState.challenges.filter(c=>c.id!==id);saveAll();renderChallengePage();});
 }
-
 function checkInChallenge(){
   const ac=activeChallenge();if(!ac)return;
   const dayIndex=Math.floor((new Date()-new Date(ac.startDate))/(1000*60*60*24));
@@ -864,16 +738,13 @@ function checkInChallenge(){
   if(dayIndex===29){ac.status='completed';ac.completedDate=new Date().toISOString();koinReact('challengeDone');}
   saveAll();document.getElementById('chal-today-amount').value='';renderChallengePage();koinReact('challengeCheckin');
 }
-
 function renderChallengePage(){
   const ac=activeChallenge();
   document.getElementById('chal-new-card').style.display=ac?'none':'block';
   document.getElementById('challenge-active-card').style.display=ac?'block':'none';
-
   if(ac){
     const dayIndex=Math.min(29,Math.floor((new Date()-new Date(ac.startDate))/(1000*60*60*24)));
     const completed=ac.days.filter(d=>d.checked).length;
-    const progress=Math.min(100,Math.round(ac.saved/ac.target*100));
     document.getElementById('chal-name-display').textContent=ac.name;
     document.getElementById('chal-progress-text').textContent=`${t('day')} ${Math.min(dayIndex+1,30)} / 30`;
     document.getElementById('chal-progress-bar').style.width=Math.min(100,(dayIndex+1)/30*100)+'%';
@@ -889,22 +760,17 @@ function renderChallengePage(){
       </div>`;
     }).join('');
   }
-
-  // History
   const hist=globalState.challenges.filter(c=>c.status!=='active').reverse();
   const hc=document.getElementById('challenge-history-list');
   if(!hist.length){hc.innerHTML=`<div class="empty-state">${t('noData')}</div>`;return}
   hc.innerHTML=hist.map(ch=>{
-    const completed=ch.days.filter(d=>d.checked).length;
-    const rate=Math.round(completed/30*100);
+    const completed=ch.days.filter(d=>d.checked).length;const rate=Math.round(completed/30*100);
     const pct=ch.target>0?Math.min(100,Math.round(ch.saved/ch.target*100)):0;
-    const statusLabel=ch.status==='completed'?t('chalDone'):t('chalArchived');
-    const statusColor=ch.status==='completed'?'#78C850':'#999';
+    const statusLabel=ch.status==='completed'?t('chalDone'):t('chalArchived');const statusColor=ch.status==='completed'?'#78C850':'#999';
     return`<div class="chal-history-card ${ch.status==='completed'?'completed-chal':''}">
       <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
         <div><div style="font-weight:700;font-size:15px;">${ch.name}</div>
-          <div style="font-size:12px;color:#999;">${ch.startDate.slice(0,10)} ${ch.archivedDate||ch.completedDate?'→ '+(ch.archivedDate||ch.completedDate).slice(0,10):''}</div>
-        </div>
+        <div style="font-size:12px;color:#999;">${ch.startDate.slice(0,10)} ${ch.archivedDate||ch.completedDate?'→ '+(ch.archivedDate||ch.completedDate).slice(0,10):''}</div></div>
         <div style="display:flex;gap:6px;align-items:center;">
           <span style="font-size:12px;padding:3px 8px;border-radius:20px;background:${statusColor}22;color:${statusColor};font-weight:600;">${statusLabel}</span>
           <button class="btn btn-danger" onclick="deleteChallenge(${ch.id})" style="padding:4px 10px;font-size:11px;">🗑</button>
@@ -921,16 +787,10 @@ function renderChallengePage(){
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-// Reports
-// ═══════════════════════════════════════════════════════
+// ══ Reports ═══════════════════════════════════════════
 function renderReports(){
-  const md=getMonth(viewingMonth);
-  const total=md.expenses.reduce((a,e)=>a+e.amount,0);
-  const avg=md.expenses.length?total/md.expenses.length:0;
-  document.getElementById('rep-total').textContent=fmt(total);
-  document.getElementById('rep-count').textContent=md.expenses.length;
-  document.getElementById('rep-avg').textContent=fmt(avg);
+  const md=getMonth(viewingMonth);const total=md.expenses.reduce((a,e)=>a+e.amount,0);const avg=md.expenses.length?total/md.expenses.length:0;
+  document.getElementById('rep-total').textContent=fmt(total);document.getElementById('rep-count').textContent=md.expenses.length;document.getElementById('rep-avg').textContent=fmt(avg);
   const byCat={};md.expenses.forEach(e=>{byCat[e.cat]=(byCat[e.cat]||0)+e.amount});
   const html=Object.entries(byCat).map(([cat,amt])=>{
     const pct=total>0?Math.round(amt/total*100):0;
@@ -942,79 +802,50 @@ function renderReports(){
   document.getElementById('reports-content').innerHTML=html||`<div class="empty-state">${t('noData')}</div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-// Dashboard
-// ═══════════════════════════════════════════════════════
+// ══ Dashboard ═════════════════════════════════════════
 function renderDashboard(){
-  const md=getMonth(viewingMonth);
-  const spent=md.expenses.reduce((a,e)=>a+e.amount,0);
-  const remaining=md.income-spent;
-  const rate=md.income>0?Math.round(remaining/md.income*100):0;
-  document.getElementById('dash-income').textContent=fmt(md.income);
-  document.getElementById('dash-spent').textContent=fmt(spent);
-  document.getElementById('dash-remaining').textContent=fmt(Math.max(0,remaining));
-  document.getElementById('dash-rate').textContent=rate+'%';
+  const md=getMonth(viewingMonth);const spent=md.expenses.reduce((a,e)=>a+e.amount,0);
+  const remaining=md.income-spent;const rate=md.income>0?Math.round(remaining/md.income*100):0;
+  document.getElementById('dash-income').textContent=fmt(md.income);document.getElementById('dash-spent').textContent=fmt(spent);
+  document.getElementById('dash-remaining').textContent=fmt(Math.max(0,remaining));document.getElementById('dash-rate').textContent=rate+'%';
   const ac=activeChallenge();
   if(ac){
-    const di=Math.floor((new Date()-new Date(ac.startDate))/(1000*60*60*24));
-    const p=Math.min(100,Math.round(ac.saved/ac.target*100));
+    const di=Math.floor((new Date()-new Date(ac.startDate))/(1000*60*60*24));const p=Math.min(100,Math.round(ac.saved/ac.target*100));
     document.getElementById('dash-challenge').innerHTML=`
-      <div style="margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-weight:600;">${ac.name}</span>
-          <span style="font-size:12px;color:#666;">${t('day')} ${Math.min(di+1,30)} / 30</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;"></div></div>
-        <div style="font-size:12px;color:#666;margin-top:6px;">${fmt(ac.saved)} / ${fmt(ac.target)}</div>
-      </div>`;
-  } else {
-    document.getElementById('dash-challenge').innerHTML=`<div class="empty-state">${t('noChallenge')}</div>`;
-  }
-  const tips=t('tips');
-  document.getElementById('dash-tip').textContent=tips[Math.floor(Math.random()*tips.length)];
+      <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-weight:600;">${ac.name}</span><span style="font-size:12px;color:#666;">${t('day')} ${Math.min(di+1,30)} / 30</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p}%;"></div></div>
+      <div style="font-size:12px;color:#666;margin-top:6px;">${fmt(ac.saved)} / ${fmt(ac.target)}</div></div>`;
+  }else{document.getElementById('dash-challenge').innerHTML=`<div class="empty-state">${t('noChallenge')}</div>`;}
+  const tips=t('tips');document.getElementById('dash-tip').textContent=tips[Math.floor(Math.random()*tips.length)];
 }
 
-// ═══════════════════════════════════════════════════════
-// Settings
-// ═══════════════════════════════════════════════════════
+// ══ Settings ══════════════════════════════════════════
 function renderSettings(){
-  document.getElementById('settings-name').value=globalState.familyName;
-  document.getElementById('settings-currency').value=globalState.currency;
+  document.getElementById('settings-name').value=globalState.familyName;document.getElementById('settings-currency').value=globalState.currency;
   const keys=allMonthKeys();
   document.getElementById('all-months-list').innerHTML=keys.length?keys.map(k=>{
     const md=getMonth(k);const isCur=k===globalState.currentMonthKey;
     return`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #E8D7C3;">
       <span style="font-weight:600;">${monthLabel(k)} ${isCur?'⭐':''}</span>
-      <div style="display:flex;gap:6px;">
-        <span style="font-size:12px;color:#999;">${md.expenses.length} ${currentLang==='zh'?'笔':'records'}</span>
-        ${!isCur?`<button class="btn btn-danger" style="padding:4px 10px;font-size:11px;" onclick="deleteMonthData('${k}')">🗑</button>`:''}
-      </div>
+      <div style="display:flex;gap:6px;"><span style="font-size:12px;color:#999;">${md.expenses.length} ${currentLang==='zh'?'笔':'records'}</span>
+      ${!isCur?`<button class="btn btn-danger" style="padding:4px 10px;font-size:11px;" onclick="deleteMonthData('${k}')">🗑</button>`:''}</div>
     </div>`;
   }).join(''):`<div class="empty-state">${t('noData')}</div>`;
 }
-
 function saveSettings(){
   globalState.familyName=document.getElementById('settings-name').value||(currentLang==='zh'?'我的家庭':'My Family');
-  globalState.currency=document.getElementById('settings-currency').value;
-  saveAll();
-  renderDashboard();renderExpenses();renderBudget();renderReports();renderChallengePage();renderSettings();
-  koinReact('settingsSaved');
+  globalState.currency=document.getElementById('settings-currency').value;saveAll();
+  renderDashboard();renderExpenses();renderBudget();renderReports();renderChallengePage();renderSettings();koinReact('settingsSaved');
 }
-
 function deleteMonthData(key){
   confirmAction(currentLang==='zh'?'删除月份数据':'Delete Month Data',`${monthLabel(key)} — ${currentLang==='zh'?'确定删除？无法恢复。':'Delete permanently? Cannot be undone.'}`,()=>{
-    delete monthData[key];saveAll();renderSettings();renderAllMonthBars();
-  });
+    delete monthData[key];saveAll();renderSettings();renderAllMonthBars();});
 }
 
-// ═══════════════════════════════════════════════════════
-// Confirm modal helper
-// ═══════════════════════════════════════════════════════
+// ══ Confirm modal ═════════════════════════════════════
 function confirmAction(title,msg,onYes){
   const modal=document.getElementById('confirm-modal');
-  document.getElementById('confirm-icon').textContent='⚠️';
-  document.getElementById('confirm-title').textContent=title;
-  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-icon').textContent='⚠️';document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;
   document.getElementById('confirm-btns').innerHTML=`
     <button class="btn btn-danger" id="confirm-yes">${t('yes')}</button>
     <button class="btn" style="background:#f0f0f0;color:#666" id="confirm-no">${t('no')}</button>`;
@@ -1023,123 +854,295 @@ function confirmAction(title,msg,onYes){
   modal.classList.add('show');
 }
 
-// ═══════════════════════════════════════════════════════
-// Language
-// ═══════════════════════════════════════════════════════
+// ══ Language ══════════════════════════════════════════
 function switchLang(lang,ev){
-  currentLang=lang;
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  ev.target.classList.add('active');
-  localStorage.setItem('selectedLang',lang);
-  updateUI();
-  ['dashboard','challenge','expenses','budget'].forEach(koinUpdatePageTip);
+  currentLang=lang;document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));ev.target.classList.add('active');
+  localStorage.setItem('selectedLang',lang);updateUI();['dashboard','challenge','expenses','budget'].forEach(koinUpdatePageTip);
 }
-
 function updateUI(){
-  document.getElementById('header-title').textContent=t('headerTitle');
-  document.getElementById('header-desc').textContent=t('headerDesc');
+  document.getElementById('header-title').textContent=t('headerTitle');document.getElementById('header-desc').textContent=t('headerDesc');
   const navKeys=['dashboard','expenses','budget','rule503020Nav','challenge','reports','settings'];
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.textContent=t(navKeys[i]));
-  const lblMap={
-    'lbl-monthlyIncome':'monthlyIncome','lbl-spent':'spent','lbl-remaining':'remaining','lbl-savingsRate':'savingsRate',
-    'lbl-tip':'tip','lbl-recordExpense':'recordExpense','lbl-category':'category','lbl-amount':'amount',
-    'lbl-description':'description','lbl-date':'date','lbl-recentExpense':'recentExpense',
-    'lbl-incomeSettings':'incomeSettings','lbl-budgetPerCategory':'budgetPerCategory',
-    'lbl-totalExpense':'totalExpense','lbl-transactions':'transactions','lbl-avgExpense':'avgExpense',
-    'lbl-expenseDistribution':'expenseDistribution','lbl-familyInfo':'familyInfo',
-    'lbl-familyName':'familyName','lbl-currency':'currency','lbl-dataManagement':'dataManagement',
-    'lbl-createNewChallenge':'createNewChallenge','lbl-challengeName':'challengeName',
-    'lbl-targetAmount':'targetAmount','lbl-challengeInfo':'challengeInfo',
-    'lbl-completedDays':'completedDays','lbl-savedAmount':'savedAmount','lbl-remainingTarget':'remainingTarget',
-    'lbl-todayCheckIn':'todayCheckIn','lbl-challengeLog':'challengeLog','lbl-chalHistory':'chalHistory',
-    'lbl-monthMgmt':'monthMgmt'
-  };
+  const lblMap={'lbl-monthlyIncome':'monthlyIncome','lbl-spent':'spent','lbl-remaining':'remaining','lbl-savingsRate':'savingsRate','lbl-tip':'tip','lbl-recordExpense':'recordExpense','lbl-category':'category','lbl-amount':'amount','lbl-description':'description','lbl-date':'date','lbl-recentExpense':'recentExpense','lbl-incomeSettings':'incomeSettings','lbl-budgetPerCategory':'budgetPerCategory','lbl-totalExpense':'totalExpense','lbl-transactions':'transactions','lbl-avgExpense':'avgExpense','lbl-expenseDistribution':'expenseDistribution','lbl-familyInfo':'familyInfo','lbl-familyName':'familyName','lbl-currency':'currency','lbl-dataManagement':'dataManagement','lbl-createNewChallenge':'createNewChallenge','lbl-challengeName':'challengeName','lbl-targetAmount':'targetAmount','lbl-challengeInfo':'challengeInfo','lbl-completedDays':'completedDays','lbl-savedAmount':'savedAmount','lbl-remainingTarget':'remainingTarget','lbl-todayCheckIn':'todayCheckIn','lbl-challengeLog':'challengeLog','lbl-chalHistory':'chalHistory','lbl-monthMgmt':'monthMgmt'};
   Object.entries(lblMap).forEach(([id,k])=>{const el=document.getElementById(id);if(el)el.textContent=t(k)});
-  const btnMap={'btn-recordBtn':'recordBtn','btn-save':'save','btn-saveSettings':'saveSettings',
-    'btn-startChallenge':'startChallenge','btn-checkIn':'checkInBtn','btn-newMonth':'newMonthBtn',
-    'btn-restart':'restart','btn-endChallenge':'endChallenge'};
+  const btnMap={'btn-recordBtn':'recordBtn','btn-save':'save','btn-saveSettings':'saveSettings','btn-startChallenge':'startChallenge','btn-checkIn':'checkInBtn','btn-newMonth':'newMonthBtn','btn-restart':'restart','btn-endChallenge':'endChallenge'};
   Object.entries(btnMap).forEach(([id,k])=>{const el=document.getElementById(id);if(el)el.textContent=t(k)});
   const phMap={'income-input':'inputIncomePlaceholder','chal-today-amount':'todayAmountPlaceholder'};
   Object.entries(phMap).forEach(([id,k])=>{const el=document.getElementById(id);if(el)el.placeholder=t(k)});
   const expCat=document.getElementById('exp-cat');
   if(expCat){const cats=['housing','food','transport','education','entertainment','shopping','other'];Array.from(expCat.options).forEach((o,i)=>o.text=t(cats[i]))}
-  renderAllMonthBars();
-  renderDashboard();
+  renderAllMonthBars();renderDashboard();
 }
 
-// ═══════════════════════════════════════════════════════
-// Koin mascot
-// ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// KOIN GUIDE SYSTEM
+// Two modes:
+//   EXPLAIN mode → full bottom-sheet modal (no spotlight)
+//   WAIT mode    → spotlight + mini bar (modal hidden)
+// ══════════════════════════════════════════════════════
 const KOIN_SVG={
-  happy:`<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="22" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="34" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/><ellipse cx="28" cy="10" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,10)"/></svg>`,
-  excited:`<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`,
-  thinking:`<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`,
-  celebrate:`<svg width="80" height="80" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><circle cx="20" cy="23" r="1.5" fill="white"/><circle cx="36" cy="23" r="1.5" fill="white"/><path d="M16 33 Q28 45 40 33" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="14" cy="14" r="2" fill="#EE5A6F"/><circle cx="42" cy="12" r="2" fill="#78C850"/><circle cx="10" cy="28" r="1.5" fill="#7C6FF7"/><circle cx="46" cy="26" r="1.5" fill="#FF9F43"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/><ellipse cx="28" cy="9" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,9)"/></svg>`
+  happy:`<svg width="72" height="72" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3.5" fill="#7A4A00"/><path d="M18 33 Q28 42 38 33" stroke="#7A4A00" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="23" r="1.2" fill="white"/><circle cx="36" cy="23" r="1.2" fill="white"/><ellipse cx="22" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="34" cy="33" rx="3" ry="1.5" fill="#FF7043" opacity=".4"/><ellipse cx="28" cy="10" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,10)"/><ellipse cx="28" cy="10" rx="3" ry="4" fill="#FFB76B" transform="rotate(-10,28,10)"/></svg>`,
+  excited:`<svg width="72" height="72" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><ellipse cx="36" cy="24" rx="3.5" ry="4" fill="#7A4A00"/><circle cx="20" cy="22" r="1.5" fill="white"/><circle cx="36" cy="22" r="1.5" fill="white"/><path d="M16 32 Q28 44 40 32" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>`,
+  thinking:`<svg width="72" height="72" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3" ry="3" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3" ry="3" fill="#7A4A00"/><path d="M20 35 Q28 32 36 35" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M32 19 Q36 14 40 16" stroke="#7A4A00" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="42" cy="15" r="2" fill="#7A4A00"/><circle cx="20" cy="23" r="1" fill="white"/><circle cx="36" cy="23" r="1" fill="white"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>`,
+  celebrate:`<svg width="72" height="72" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#FF9F43"/><circle cx="28" cy="28" r="23" fill="#FFB76B" opacity=".5"/><ellipse cx="20" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><ellipse cx="36" cy="25" rx="3.5" ry="3.5" fill="#7A4A00"/><circle cx="20" cy="23" r="1.5" fill="white"/><circle cx="36" cy="23" r="1.5" fill="white"/><path d="M16 33 Q28 45 40 33" stroke="#7A4A00" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="14" cy="14" r="2" fill="#EE5A6F"/><circle cx="42" cy="12" r="2" fill="#78C850"/><circle cx="10" cy="28" r="1.5" fill="#7C6FF7"/><circle cx="46" cy="26" r="1.5" fill="#FF9F43"/><ellipse cx="28" cy="9" rx="5" ry="6" fill="#FFD166" transform="rotate(-10,28,9)"/></svg>`
 };
 
+// Each step has two phases:
+// phase A (explain): show full modal, no spotlight — user reads and clicks CTA
+// phase B (wait):    navigate to page, show spotlight + mini bar — user does the task, then clicks next
 const KOIN_STEPS={
-  zh:[
-    {mood:'happy',title:'嗨！我是 Koin！🪙',text:'我是你的专属理财小伙伴！我会陪你走过每一个步骤，让管钱变得超级简单又好玩！准备好了吗？',btn:'我准备好了！→'},
-    {mood:'thinking',title:'先设置你的收入 💰',text:'去「预算管理」输入你每个月有多少钱。这是一切的起点！每个月的数据都会独立保存，随时可以回顾。',btn:'明白了！→'},
-    {mood:'excited',title:'记录每一笔花费！🧋',text:'每次花钱都记录下来！小钱加起来很惊人的。每个月结束后点「开始新的一个月」，旧数据不会消失！',btn:'我会记的！→'},
-    {mood:'thinking',title:'认识 50/30/20 法则 ⚖️',text:'50% 必需品，30% 想要的东西，20% 存起来。我会帮你追踪每个月的分配，还有历史趋势图！',btn:'懂了！→'},
-    {mood:'celebrate',title:'开始 30 天挑战！🎯',text:'去「30天挑战」设定目标，每天打卡！可以随时重新开始，旧的记录都会保留在历史里。加油！🎉',btn:'出发！🚀'}
-  ],
-  en:[
-    {mood:'happy',title:"Hi, I'm Koin! 🪙",text:"I'm your personal money buddy! I'll guide you every step of the way and make managing money super fun. Ready?",btn:"Let's go! →"},
-    {mood:'thinking',title:'Set your income first 💰',text:"Go to Budget and enter your monthly income. That's your starting number! Each month's data is saved separately so you can always look back.",btn:'Got it! →'},
-    {mood:'excited',title:'Record every expense! 🧋',text:"Track every ringgit you spend! When a month ends, click 'New Month' — your old data stays safe and viewable anytime.",btn:"I'll do it! →"},
-    {mood:'thinking',title:'Learn the 50/30/20 Rule ⚖️',text:'50% needs, 30% wants, 20% savings. I track your allocation each month and show you historical trends!',btn:'Makes sense! →'},
-    {mood:'celebrate',title:'Start the 30-Day Challenge! 🎯',text:"Set a savings goal and check in daily! You can restart anytime — old challenge records are kept in history. You've got this! 🎉",btn:'Let\'s go! 🚀'}
-  ]
+zh:[
+  {
+    mood:'happy',
+    title:'嗨！我是 Koin！🪙',
+    text:'我是你的专属理财小伙伴！我会带你到每个功能，告诉你该怎么做。跟着我，一步一步来！',
+    ctaLabel:'出发！→',
+    waitPage:null, waitEl:null, waitArrow:null, waitPrompt:null  // no wait phase for intro
+  },
+  {
+    mood:'thinking',
+    title:'第一步：设置你的月收入 💰',
+    text:'先去「预算管理」，输入你每个月有多少钱，然后按「保存」。这是一切计算的起点！',
+    ctaLabel:'带我去填！→',
+    waitPage:'budget', waitEl:'income-card',
+    waitArrow:'👆 在这里输入月收入，然后按保存',
+    waitPrompt:'在上面输入你的月收入，按「保存」完成'
+  },
+  {
+    mood:'excited',
+    title:'第二步：记录你的花费！🧋',
+    text:'每次花钱都来「支出记录」登记！选好分类，填金额，按「记录支出」就搞定了。试试看！',
+    ctaLabel:'带我去记！→',
+    waitPage:'expenses', waitEl:'exp-add-card',
+    waitArrow:'👆 在这里填一笔支出试试',
+    waitPrompt:'填一笔支出，按「记录支出」试试看！'
+  },
+  {
+    mood:'thinking',
+    title:'第三步：看懂你的三个桶 ⚖️',
+    text:'50/30/20 法则会自动把你的收入分成三桶：50% 必需、30% 想要、20% 存起来。我带你去看！',
+    ctaLabel:'带我去看！→',
+    waitPage:'rule503020', waitEl:'rule-buckets',
+    waitArrow:'👆 这就是你的三个预算桶',
+    waitPrompt:'看看你的三个桶！准备好了就继续'
+  },
+  {
+    mood:'celebrate',
+    title:'第四步：开始 30 天挑战！🎯',
+    text:'填上挑战名称和你想存的金额，按「开始挑战」！每天打卡，存钱就会变成习惯！',
+    ctaLabel:'带我去开始！→',
+    waitPage:'challenge', waitEl:'chal-new-card',
+    waitArrow:'👆 填上名称和目标，开始你的挑战！',
+    waitPrompt:'填上挑战名称和目标金额，按「开始挑战」！'
+  },
+  {
+    mood:'happy',
+    title:'你已经准备好了！🌟',
+    text:'做得很棒！每个月按「新月份」开始新的记录，旧数据永远保留。随时点右下角的我来重看教程。加油！💪',
+    ctaLabel:'开始理财！✓',
+    waitPage:'dashboard', waitEl:null, waitArrow:null, waitPrompt:null
+  }
+],
+en:[
+  {
+    mood:'happy',
+    title:"Hi, I'm Koin! 🪙",
+    text:"I'm your money buddy! I'll take you to each feature step by step and show you exactly what to do. Let's go!",
+    ctaLabel:"Let's go! →",
+    waitPage:null, waitEl:null, waitArrow:null, waitPrompt:null
+  },
+  {
+    mood:'thinking',
+    title:'Step 1: Set your monthly income 💰',
+    text:"Go to Budget, enter how much money you get each month, then tap Save. This is the foundation of everything!",
+    ctaLabel:'Take me there! →',
+    waitPage:'budget', waitEl:'income-card',
+    waitArrow:'👆 Enter your income here and tap Save',
+    waitPrompt:"Enter your monthly income above and tap Save"
+  },
+  {
+    mood:'excited',
+    title:'Step 2: Record your spending! 🧋',
+    text:"Every time you spend, come to Expenses and log it! Pick a category, enter the amount, tap Record. Try it now!",
+    ctaLabel:'Take me there! →',
+    waitPage:'expenses', waitEl:'exp-add-card',
+    waitArrow:'👆 Record an expense here',
+    waitPrompt:"Fill in an expense above and tap Record — give it a try!"
+  },
+  {
+    mood:'thinking',
+    title:'Step 3: See your 3 money buckets ⚖️',
+    text:"The 50/30/20 page automatically splits your income: 50% needs, 30% wants, 20% savings. Let me show you!",
+    ctaLabel:'Show me! →',
+    waitPage:'rule503020', waitEl:'rule-buckets',
+    waitArrow:'👆 These are your 3 budget buckets',
+    waitPrompt:"Check out your 3 buckets! Tap Next when ready"
+  },
+  {
+    mood:'celebrate',
+    title:'Step 4: Start the 30-Day Challenge! 🎯',
+    text:"Enter a challenge name and your savings target, then tap Start Challenge! Check in daily to build the saving habit!",
+    ctaLabel:'Take me there! →',
+    waitPage:'challenge', waitEl:'chal-new-card',
+    waitArrow:'👆 Enter a name & target to start!',
+    waitPrompt:"Fill in a name and target amount, then tap Start Challenge!"
+  },
+  {
+    mood:'happy',
+    title:"You're all set! 🌟",
+    text:"Amazing! Tap New Month each month to start fresh — old data is always kept. Tap me (bottom right) anytime to replay this guide. Go get it! 💪",
+    ctaLabel:'Start managing money! ✓',
+    waitPage:'dashboard', waitEl:null, waitArrow:null, waitPrompt:null
+  }
+]
 };
 
-const KOIN_PAGE_TIPS={
-  zh:{dashboard:'<strong>Koin 说：</strong> 这里是你的财务总览！用月份选择器切换查看历史月份的记录 📅',challenge:'<strong>Koin 说：</strong> 可以随时重新开始挑战！旧的记录会保存在下面的历史记录里 💪',expenses:'<strong>Koin 说：</strong> 只有当前月份可以添加支出。历史月份只能查看 📋',budget:'<strong>Koin 说：</strong> 每个月设置一次收入和预算，我会帮你追踪！📊'},
-  en:{dashboard:'<strong>Koin says:</strong> Your financial overview! Use the month selector to browse historical months 📅',challenge:'<strong>Koin says:</strong> You can restart the challenge anytime! Old records stay in the history below 💪',expenses:'<strong>Koin says:</strong> You can only add expenses in the current month. Historical months are view-only 📋',budget:'<strong>Koin says:</strong> Set your income and budget each month — I\'ll help you track it! 📊'}
-};
+let _guideStep=-1;
+let _guideMode=''; // 'explain' | 'wait'
+let _spotTimer=null;
 
-const KOIN_REACTIONS={
-  zh:{expenseAdded:{mood:'excited',text:'记录成功！继续保持，你做得很棒！🌟'},challengeStart:{mood:'excited',text:'挑战开始！我相信你一定能坚持30天！🔥'},challengeCheckin:{mood:'celebrate',text:'今天打卡成功！每一天都算数！🎉'},incomeSet:{mood:'happy',text:'收入设置好了！现在开始追踪你的预算 💰'},settingsSaved:{mood:'happy',text:'设置已保存！🚀'},challengeDone:{mood:'celebrate',text:'🎉 太厉害了！你完成了30天挑战！'}},
-  en:{expenseAdded:{mood:'excited',text:"Recorded! Keep it up — you're doing amazing! 🌟"},challengeStart:{mood:'excited',text:"Challenge started! I know you can keep it up! 🔥"},challengeCheckin:{mood:'celebrate',text:"Check-in done! Every day counts! 🎉"},incomeSet:{mood:'happy',text:"Income set! Let's start tracking your budget 💰"},settingsSaved:{mood:'happy',text:"Settings saved! 🚀"},challengeDone:{mood:'celebrate',text:'🎉 You completed the 30-Day Challenge!'}}
-};
+function koinRestartGuide(){koinShowExplain(0)}
 
-function koinShowStep(i){
+function koinShowExplain(i){
+  _guideStep=i;_guideMode='explain';
   const steps=KOIN_STEPS[currentLang]||KOIN_STEPS.zh;
   const s=steps[i];
-  document.getElementById('koin-anim').innerHTML=KOIN_SVG[s.mood];
-  document.getElementById('koin-modal-title').textContent=s.title;
-  document.getElementById('koin-modal-text').textContent=s.text;
+
+  // hide mini bar & spotlight
+  _hideMiniBar();_clearSpotlight();
+
+  // build full modal
+  document.getElementById('koin-anim').innerHTML=KOIN_SVG[s.mood]||KOIN_SVG.happy;
   document.getElementById('koin-step-lbl').textContent=currentLang==='zh'?`第 ${i+1} / ${steps.length} 步`:`Step ${i+1} of ${steps.length}`;
   document.getElementById('koin-dots').innerHTML=steps.map((_,j)=>`<div class="koin-dot ${j<i?'done':j===i?'active':''}"></div>`).join('');
+  document.getElementById('koin-modal-title').textContent=s.title;
+  document.getElementById('koin-modal-text').textContent=s.text;
+
   const btns=document.getElementById('koin-modal-btns');btns.innerHTML='';
-  if(i>0){const b=document.createElement('button');b.className='koin-modal-btn secondary';b.textContent=currentLang==='zh'?'← 上一步':'← Back';b.onclick=()=>koinShowStep(i-1);btns.appendChild(b)}
+  // Back button
+  if(i>0){
+    const b=document.createElement('button');b.className='koin-modal-btn secondary';
+    b.textContent=currentLang==='zh'?'← 上一步':'← Back';
+    b.onclick=()=>koinShowExplain(i-1);btns.appendChild(b);
+  }
+  // Main CTA
   const nb=document.createElement('button');nb.className='koin-modal-btn primary';
-  nb.textContent=i<steps.length-1?s.btn:(currentLang==='zh'?'完成！✓':'Done! ✓');
-  nb.onclick=i<steps.length-1?()=>koinShowStep(i+1):()=>{document.getElementById('koin-overlay').classList.remove('show');localStorage.setItem('koinOnboardingDone','1');document.getElementById('koin-fab-badge').style.display='none'};
+  const isLast=i===steps.length-1;
+  nb.textContent=isLast?(currentLang==='zh'?'完成！✓':'Done! ✓'):s.ctaLabel;
+  nb.onclick=isLast?()=>_koinFinish():()=>_koinGoWait(i);
   btns.appendChild(nb);
-  if(i===0){const sk=document.createElement('button');sk.className='koin-modal-btn secondary';sk.textContent=currentLang==='zh'?'跳过':'Skip';sk.onclick=()=>{document.getElementById('koin-overlay').classList.remove('show');localStorage.setItem('koinOnboardingDone','1');document.getElementById('koin-fab-badge').style.display='none'};btns.appendChild(sk)}
+  // Skip (first step only)
+  if(i===0){
+    const sk=document.createElement('button');sk.className='koin-modal-btn secondary';
+    sk.textContent=currentLang==='zh'?'跳过':'Skip';
+    sk.onclick=()=>_koinFinish();btns.appendChild(sk);
+  }
+
   document.getElementById('koin-overlay').classList.add('show');
 }
 
+function _koinGoWait(i){
+  // If no wait phase, skip straight to next explain
+  const steps=KOIN_STEPS[currentLang]||KOIN_STEPS.zh;
+  const s=steps[i];
+  if(!s.waitPage){koinShowExplain(i+1);return;}
+
+  _guideMode='wait';
+  // hide full modal
+  document.getElementById('koin-overlay').classList.remove('show');
+
+  // navigate
+  showPage(s.waitPage,null);
+
+  // after page renders, spotlight & mini bar
+  setTimeout(()=>{
+    if(s.waitEl)_showSpotlight(s.waitEl,s.waitArrow);
+    _showMiniBar(s.waitPrompt||'',()=>{
+      _hideMiniBar();_clearSpotlight();
+      koinShowExplain(i+1);
+    });
+  },420);
+}
+
+function _koinFinish(){
+  document.getElementById('koin-overlay').classList.remove('show');
+  _hideMiniBar();_clearSpotlight();
+  localStorage.setItem('koinOnboardingDone','1');
+  document.getElementById('koin-fab-badge').style.display='none';
+  showPage('dashboard',null);
+}
+
+// ── Spotlight ──────────────────────────────────────────
+function _showSpotlight(elId,arrowText){
+  const el=document.getElementById(elId);if(!el)return;
+  if(_spotTimer)clearTimeout(_spotTimer);
+  _spotTimer=setTimeout(()=>{
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>{
+      const r=el.getBoundingClientRect();const pad=10;
+      const hole=document.getElementById('koin-spotlight-hole');
+      hole.style.left=(r.left-pad)+'px';hole.style.top=(r.top+window.scrollY-pad)+'px';
+      hole.style.width=(r.width+pad*2)+'px';hole.style.height=(r.height+pad*2)+'px';
+      // use position:fixed with scroll offset
+      hole.style.top=(r.top-pad)+'px'; // fixed position
+      hole.classList.add('show');
+      document.getElementById('koin-spotlight-overlay').classList.add('show');
+      if(arrowText){
+        const arrow=document.getElementById('koin-arrow');
+        document.getElementById('koin-arrow-label').textContent=arrowText;
+        // position arrow above the element, inside viewport
+        const arrowTop=Math.max(r.top-72,10);
+        arrow.style.left=Math.max(10,r.left+r.width/2-80)+'px';
+        arrow.style.top=arrowTop+'px';
+        arrow.classList.add('show');
+      }
+    },300);
+  },80);
+}
+
+function _clearSpotlight(){
+  if(_spotTimer)clearTimeout(_spotTimer);
+  document.getElementById('koin-spotlight-hole').classList.remove('show');
+  document.getElementById('koin-spotlight-overlay').classList.remove('show');
+  document.getElementById('koin-arrow').classList.remove('show');
+}
+
+// ── Mini bar ───────────────────────────────────────────
+function _showMiniBar(text,onNext){
+  const bar=document.getElementById('koin-minibar');
+  document.getElementById('koin-minibar-text').textContent=text;
+  const btn=document.getElementById('koin-minibar-btn');
+  btn.textContent=currentLang==='zh'?'下一步 →':'Next →';
+  btn.onclick=onNext;
+  bar.classList.add('show');
+}
+function _hideMiniBar(){document.getElementById('koin-minibar').classList.remove('show')}
+
+// ══ Koin reactions (toast) ════════════════════════════
+const KOIN_REACTIONS={
+  zh:{expenseAdded:{mood:'excited',text:'记录成功！继续保持！🌟'},challengeStart:{mood:'excited',text:'挑战开始！坚持30天！🔥'},challengeCheckin:{mood:'celebrate',text:'打卡成功！每一天都算数！🎉'},incomeSet:{mood:'happy',text:'收入设置好了！开始追踪预算 💰'},settingsSaved:{mood:'happy',text:'设置已保存！🚀'},challengeDone:{mood:'celebrate',text:'🎉 完成30天挑战！太厉害了！'}},
+  en:{expenseAdded:{mood:'excited',text:"Recorded! Keep it up! 🌟"},challengeStart:{mood:'excited',text:"Challenge started! Keep it up for 30 days! 🔥"},challengeCheckin:{mood:'celebrate',text:"Check-in done! Every day counts! 🎉"},incomeSet:{mood:'happy',text:"Income set! Let's track your budget 💰"},settingsSaved:{mood:'happy',text:"Settings saved! 🚀"},challengeDone:{mood:'celebrate',text:'🎉 30-Day Challenge complete!'}}
+};
 function koinReact(key){
   const r=(KOIN_REACTIONS[currentLang]||KOIN_REACTIONS.zh)[key];if(!r)return;
   const toast=document.createElement('div');
-  toast.style.cssText='position:fixed;bottom:90px;right:24px;background:white;border:2px solid #FFD699;border-radius:14px;padding:12px 16px;display:flex;gap:10px;align-items:center;max-width:280px;z-index:2000;box-shadow:0 4px 20px rgba(255,159,67,.3);';
-  toast.innerHTML=`<span style="flex-shrink:0">${KOIN_SVG[r.mood].replace('width="80" height="80"','width="40" height="40"')}</span><span style="font-size:13px;color:#444;line-height:1.5;">${r.text}</span>`;
+  toast.style.cssText='position:fixed;bottom:90px;right:24px;background:white;border:2px solid #FFD699;border-radius:14px;padding:12px 16px;display:flex;gap:10px;align-items:center;max-width:260px;z-index:3000;box-shadow:0 4px 20px rgba(255,159,67,.3);animation:slideUp .3s ease';
+  toast.innerHTML=`<span style="flex-shrink:0">${KOIN_SVG[r.mood].replace('width="72" height="72"','width="38" height="38"')}</span><span style="font-size:13px;color:#444;line-height:1.5;">${r.text}</span>`;
   document.body.appendChild(toast);
   setTimeout(()=>{toast.style.transition='opacity .5s';toast.style.opacity='0';setTimeout(()=>toast.remove(),500)},3000);
 }
 
+// ══ Page tips ══════════════════════════════════════════
+const KOIN_PAGE_TIPS={
+  zh:{dashboard:'<strong>Koin 说：</strong> 这里是你的财务总览！用月份选择器切换查看历史月份 📅',challenge:'<strong>Koin 说：</strong> 可以随时重新开始挑战！旧记录保存在历史里 💪',expenses:'<strong>Koin 说：</strong> 只有当前月份可以添加支出，历史月份只能查看 📋',budget:'<strong>Koin 说：</strong> 每个月设置收入和预算，我帮你追踪！📊'},
+  en:{dashboard:'<strong>Koin says:</strong> Your financial overview! Use the month selector to browse history 📅',challenge:'<strong>Koin says:</strong> Restart the challenge anytime — old records stay in history 💪',expenses:'<strong>Koin says:</strong> Only the current month allows adding expenses. Past months are view-only 📋',budget:"<strong>Koin says:</strong> Set your income and budgets each month — I'll help you track! 📊"}
+};
 function koinUpdatePageTip(pageId){
   const tips=KOIN_PAGE_TIPS[currentLang]||KOIN_PAGE_TIPS.zh;
-  const el=document.getElementById('koin-tip-'+pageId);
-  if(el&&tips[pageId])el.innerHTML=tips[pageId];
+  const el=document.getElementById('koin-tip-'+pageId);if(el&&tips[pageId])el.innerHTML=tips[pageId];
 }
 
-// ═══════════════════════════════════════════════════════
-// Init
-// ═══════════════════════════════════════════════════════
+// ══ Init ══════════════════════════════════════════════
 document.getElementById('exp-date').value=new Date().toISOString().split('T')[0];
 loadAll();
 currentLang=localStorage.getItem('selectedLang')||'zh';
@@ -1147,11 +1150,10 @@ document.querySelectorAll('.lang-btn').forEach(b=>{
   if((currentLang==='zh'&&b.textContent==='中文')||(currentLang==='en'&&b.textContent==='English'))b.classList.add('active');
   else b.classList.remove('active');
 });
-updateUI();
-renderAllMonthBars();
+updateUI();renderAllMonthBars();
 ['dashboard','challenge','expenses','budget'].forEach(koinUpdatePageTip);
 if(!localStorage.getItem('koinOnboardingDone')){
-  setTimeout(()=>koinShowStep(0),800);
+  setTimeout(()=>koinShowExplain(0),800);
 }else{
   document.getElementById('koin-fab-badge').style.display='none';
 }
