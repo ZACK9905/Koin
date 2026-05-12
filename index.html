@@ -522,11 +522,9 @@ function createNewMonth(confirm_){
   _doCreateNewMonth();
 }
 function _doCreateNewMonth(){
-  const current=globalState.currentMonthKey;
-  const [year,month]=current.split('-').map(Number);
-  let nextYear=year,nextMonth=month+1;
-  if(nextMonth>12){nextMonth=1;nextYear++;}
-  const key=`${nextYear}-${String(nextMonth).padStart(2,'0')}`;
+  const d=new Date();
+  d.setMonth(d.getMonth()+1);
+  const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
   globalState.currentMonthKey=key;
   getMonth(key);
   viewingMonth=key;
